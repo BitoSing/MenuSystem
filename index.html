@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Artisan Code Cafe | Professional POS</title>
+    <title>អាហារដ្ឋានស៊ីជម្ពូរ | Business POS</title>
     
     <style>
-        /* --- PROFESSIONAL DESIGN SYSTEM v4.0 --- */
+        /* --- PROFESSIONAL DESIGN SYSTEM v5.0 (FINAL) --- */
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Noto+Sans+Khmer:wght@400;500;700&family=Roboto+Mono:wght@400;700&display=swap');
         :root {
-            --bg-color: #f4f7f9; --surface-color: #ffffff; --primary-color: #6d5ed3; --primary-light: #e9e6ff;
-            --text-primary: #1e293b; --text-secondary: #64748b; --border-color: #e2e8f0; --success-color: #28a745;
+            --bg-color: #f4f7f9; --surface-color: #ffffff; --primary-color: #d63384; --primary-light: #fce4ec;
+            --text-primary: #1e293b; --text-secondary: #64748b; --border-color: #e2e8f0; --success-color: #198754;
             --danger-color: #dc3545; --shadow: 0 10px 30px rgba(0, 0, 0, 0.07); --border-radius: 12px;
             --font-main: 'Poppins', 'Noto Sans Khmer', sans-serif; --font-mono: 'Roboto Mono', monospace;
         }
@@ -20,95 +20,85 @@
 
         /* --- LAYOUT & HEADER --- */
         .container { max-width: 1700px; margin: 0 auto; padding: 25px; }
-        .main-header { padding: 15px 25px; background-color: var(--surface-color); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; gap: 20px; }
-        .main-header h1 { font-size: 1.5rem; margin: 0; font-weight: 700; color: var(--primary-color); flex-shrink: 0; }
-        .header-controls { display: flex; align-items: center; gap: 20px; }
-        .lang-switcher button {
-            font-family: var(--font-main); font-size: 0.9rem; font-weight: 500; padding: 6px 12px;
-            border: 1px solid var(--border-color); background-color: transparent; border-radius: 6px; cursor: pointer;
-        }
-        .lang-switcher button.active { background-color: var(--primary-color); color: white; border-color: var(--primary-color); }
+        .main-header { padding: 20px 25px; background-color: var(--surface-color); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+        .main-header h1 { font-family: 'Noto Sans Khmer', serif; font-size: 2.25rem; margin: 0; font-weight: 700; color: var(--primary-color); }
+        .main-content { display: grid; grid-template-columns: 1fr 450px; gap: 30px; margin-top: 25px; align-items: flex-start; }
 
         /* --- MENU SECTION --- */
-        .main-content { display: grid; grid-template-columns: 1fr 450px; gap: 30px; margin-top: 25px; align-items: flex-start; }
         .menu-nav { display: flex; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; }
-        .category-btn {
-            padding: 10px 25px; border: 1px solid var(--border-color); background-color: var(--surface-color);
-            border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease;
-        }
+        .category-btn { padding: 10px 25px; border: 1px solid var(--border-color); background-color: var(--surface-color); border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease; }
         .category-btn.active { background-color: var(--primary-color); color: white; border-color: var(--primary-color); transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; }
+        .menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; }
         .menu-item { background-color: var(--surface-color); border-radius: var(--border-radius); box-shadow: var(--shadow); display: flex; flex-direction: column; }
         .menu-item.hidden { display: none; }
-        .menu-item-image { height: 180px; }
-        .menu-item-image img { width: 100%; height: 100%; object-fit: cover; border-radius: var(--border-radius) var(--border-radius) 0 0; }
         .menu-item-content { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; }
-        .menu-item-content h3 { margin: 0 0 10px; font-size: 1.3rem; font-weight: 600; flex-grow: 1; line-height: 1.4; }
-        .menu-item-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; }
+        .menu-item-names { margin-bottom: 15px; flex-grow: 1; }
+        .lang-kh { font-size: 1.4rem; font-weight: 700; color: var(--text-primary); }
+        .lang-en { font-size: 1.1rem; font-weight: 500; color: var(--text-secondary); }
+        .lang-zh { font-size: 1.1rem; color: var(--text-secondary); }
+        .lang-py { font-size: 0.9rem; font-style: italic; color: #a0a0a0; }
+        .menu-item-footer { display: flex; justify-content: space-between; align-items: center; }
         .price-display .price-usd { font-weight: 700; font-size: 1.4rem; color: var(--primary-color); }
         .price-display .price-khr { font-size: 0.9rem; color: var(--text-secondary); }
-        .card-controls .add-btn { background-color: var(--primary-light); color: var(--primary-color); border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: background-color 0.2s; }
-        .card-controls .add-btn:hover { background-color: var(--primary-color); color: white; }
+        .card-controls .add-btn { background-color: var(--primary-light); color: var(--primary-color); border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; }
         .card-controls .quantity-adjuster { display: flex; align-items: center; gap: 15px; }
         .card-controls .quantity-adjuster button { background-color: #f1f5f9; border: 1px solid var(--border-color); width: 36px; height: 36px; border-radius: 50%; font-size: 1.4rem; cursor: pointer; }
 
         /* --- SIDEBAR & CART --- */
         .sidebar { position: sticky; top: 25px; background-color: var(--surface-color); border-radius: var(--border-radius); box-shadow: var(--shadow); overflow: hidden; }
-        /* Tab styles are unchanged */
         .sidebar-tabs { display: flex; }
         .tab-btn { flex: 1; padding: 18px; border: none; background-color: #f8f9fa; cursor: pointer; font-size: 1rem; font-weight: 600; color: var(--text-secondary); transition: all 0.2s; border-bottom: 3px solid transparent; }
         .tab-btn.active { color: var(--primary-color); background-color: var(--surface-color); border-bottom-color: var(--primary-color); }
         .sidebar-panel { display: none; padding: 25px; }
         .sidebar-panel.active { display: block; animation: fadeIn 0.4s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        #cart-items { list-style-type: none; padding: 0; margin: 0; max-height: 240px; overflow-y: auto; }
-        .cart-item { display: flex; align-items: center; padding: 15px 0; justify-content: space-between; }
+        
+        #cart-items { list-style-type: none; padding: 0; margin: 0; max-height: 200px; overflow-y: auto; }
+        .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; }
         .cart-item:not(:last-child) { border-bottom: 1px solid var(--border-color); }
-        .item-name { font-weight: 500; }
-        #table-number-input { width: 100%; padding: 12px; font-size: 1rem; border: 1px solid var(--border-color); border-radius: 8px; }
-        .cart-summary .summary-row { display: flex; justify-content: space-between; margin-bottom: 12px; }
-        #cart-total-usd, #cart-total-khr { display: block; text-align: right; }
-        #cart-total-usd { font-weight: 700; font-size: 1.4rem; }
-        #cart-total-khr { font-size: 1rem; color: var(--text-secondary); }
-        .action-btn { width: 100%; padding: 15px; border: none; border-radius: 8px; font-size: 1rem; cursor: pointer; font-weight: 600; transition: transform 0.2s, opacity 0.2s; }
-        .action-btn:disabled { opacity: 0.6; cursor: not-allowed; background-color: #ced4da !important; }
+        .form-group { margin-top: 20px; }
+        .form-group label { font-weight: 600; display: block; margin-bottom: 8px; }
+        .form-group input { width: 100%; padding: 12px; font-size: 1rem; border: 1px solid var(--border-color); border-radius: 8px; }
+        .payment-methods { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .payment-btn { padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; background-color: #f8f9fa; font-weight: 500; cursor: pointer; text-align: center;}
+        .payment-btn.selected { background-color: var(--primary-light); border-color: var(--primary-color); font-weight: 600; }
+        .cart-summary { border-top: 1px solid var(--border-color); margin-top: 20px; padding-top: 20px; }
+        .summary-row { display: flex; justify-content: space-between; align-items: center; }
+        .action-btn { width: 100%; padding: 15px; border: none; border-radius: 8px; font-size: 1rem; cursor: pointer; font-weight: 600; }
+        .action-btn:disabled { opacity: 0.6; cursor: not-allowed; background-color: #ced4da !important; color: var(--text-secondary) !important; }
 
-        /* --- RECEIPT MODAL --- */
-        .receipt-modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(30, 41, 59, 0.6); backdrop-filter: blur(5px);
-            display: none; justify-content: center; align-items: center; z-index: 1000;
-        }
-        .receipt-content {
-            background-color: #fff; width: 90%; max-width: 380px; padding: 20px;
-            font-family: var(--font-mono); font-size: 14px; line-height: 1.8;
-            border-radius: 4px; border: 1px solid #ddd;
-        }
-        .receipt-header { text-align: center; margin-bottom: 20px; }
-        .receipt-header h2 { margin: 0; font-family: var(--font-main); font-size: 1.5rem; color: #111;}
-        .receipt-header p { margin: 4px 0; font-size: 13px; }
-        .receipt-info { border-top: 1px dashed #555; border-bottom: 1px dashed #555; padding: 10px 0; margin-bottom: 15px; }
-        .receipt-info div { display: flex; justify-content: space-between; }
-        .receipt-table { width: 100%; }
-        .receipt-table th { text-align: left; border-bottom: 1px solid #111; padding-bottom: 5px; }
-        .receipt-table th:nth-child(2) { text-align: center; }
-        .receipt-table th:last-child { text-align: right; }
-        .receipt-table td { padding: 8px 0; vertical-align: top; }
-        .receipt-table td:nth-child(2) { text-align: center; }
-        .receipt-table td:last-child { text-align: right; }
-        .receipt-totals { border-top: 1px dashed #555; padding-top: 15px; margin-top: 15px; }
+        /* --- HISTORY PANEL --- */
+        .history-table-container { max-height: 400px; overflow-y: auto; }
+        .history-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        .history-table th, .history-table td { padding: 10px; text-align: left; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
+        .history-table td:last-child { text-align: center; }
+        .voided-order { text-decoration: line-through; color: #aaa; background-color: #fafafa; }
+        .void-btn { background: var(--danger-color); color: white; border: none; padding: 4px 8px; font-size: 0.75rem; border-radius: 4px; cursor: pointer; }
+        .void-btn:disabled { background-color: #aaa; cursor: not-allowed; }
+        .grand-total { margin-top: 20px; padding: 20px; background-color: var(--primary-light); border-radius: 8px; display: flex; justify-content: space-between; align-items: center; }
+        #grand-total-amount { font-weight: 700; font-size: 1.5rem; color: var(--primary-color); }
+
+        /* --- RECEIPT STYLES --- */
+        .receipt-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(30, 41, 59, 0.6); backdrop-filter: blur(5px); display: none; justify-content: center; align-items: center; z-index: 1000; }
+        .receipt-content { background: #fff; width: 90%; max-width: 380px; padding: 20px; font-family: var(--font-mono); color: #000; }
+        .receipt-header { text-align: center; margin-bottom: 15px; }
+        .receipt-header h2 { font-family: 'Noto Sans Khmer', serif; font-size: 2rem; color: #000; margin: 0; }
+        .receipt-info { border-top: 1px dashed #000; border-bottom: 1px dashed #000; padding: 8px 0; margin-bottom: 10px; font-size: 0.9rem; }
+        .receipt-info div { display: flex; justify-content: space-between; padding: 2px 0;}
+        .receipt-table { width: 100%; font-size: 0.9rem; border-collapse: collapse; }
+        .receipt-table th { text-align: left; padding: 5px 0; border-bottom: 1px solid #000; }
+        .receipt-table td { padding: 5px 0; }
+        .receipt-table .col-qty { text-align: center; }
+        .receipt-table .col-price { text-align: right; }
+        .receipt-totals { border-top: 1px dashed #000; margin-top: 10px; padding-top: 10px; }
         .receipt-totals .total-row { display: flex; justify-content: space-between; font-weight: bold; font-size: 1.2rem; }
-        .receipt-totals .total-row-khr { display: flex; justify-content: space-between; font-size: 1rem; color: #555; }
-        .receipt-footer { text-align: center; margin-top: 25px; font-size: 13px; }
-
-        /* --- RESPONSIVENESS --- */
+        .receipt-totals .total-row-khr { display: flex; justify-content: space-between; }
+        .receipt-footer { text-align: center; margin-top: 20px; font-size: 0.85rem; }
+        
+        /* --- RESPONSIVENESS & PRINT --- */
         @media (max-width: 1200px) { .main-content { grid-template-columns: 1fr; } .sidebar { position: static; margin-top: 30px; } }
         @media (max-width: 768px) { .main-header { flex-direction: column; gap: 15px; } }
-
-        /* PRINT STYLES */
         @media print {
-            body { background-color: #fff; }
             body * { visibility: hidden; }
             .receipt-modal-overlay, .receipt-content, .receipt-content * { visibility: visible; }
             .receipt-modal-overlay { position: absolute; left: 0; top: 0; width: 100%; background: none; backdrop-filter: none; display: flex !important; }
@@ -120,15 +110,8 @@
 <body>
 
     <header class="main-header">
-        <h1>The Artisan Code Cafe</h1>
-        <div class="header-controls">
-            <div class="lang-switcher">
-                <button data-lang="kh" class="active">ខ្មែរ</button>
-                <button data-lang="en">EN</button>
-                <button data-lang="zh">中文</button>
-            </div>
-            <div id="current-time" style="font-family: var(--font-mono); font-size: 1rem;"></div>
-        </div>
+        <h1>អាហារដ្ឋានស៊ីជម្ពូរ</h1>
+        <div id="current-time" style="font-family: var(--font-mono); font-size: 1rem;"></div>
     </header>
 
     <main class="container">
@@ -141,32 +124,54 @@
 
             <!-- Sidebar Section -->
             <aside class="sidebar">
-                 <div class="sidebar-tabs">
+                <div class="sidebar-tabs">
                     <button class="tab-btn active" data-tab="cart">Current Order</button>
                     <button class="tab-btn" data-tab="history">Order History</button>
                 </div>
-
                 <!-- Cart Panel -->
                 <div id="panel-cart" class="sidebar-panel active">
-                    <ul id="cart-items"><li class="cart-empty-message">Select items from the menu.</li></ul>
-                    <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border-color);">
-                        <label for="table-number-input" style="font-weight: 600; display: block; margin-bottom: 8px;">Table Number</label>
+                    <ul id="cart-items"><li class="cart-empty-message">សូមជ្រើសរើសមុខទំនិញ</li></ul>
+                    <div class="form-group">
+                        <label for="cashier-name-input">Cashier Name</label>
+                        <input type="text" id="cashier-name-input" placeholder="e.g., Srey Leak">
+                    </div>
+                    <div class="form-group">
+                        <label for="table-number-input">Table Number</label>
                         <input type="number" id="table-number-input" placeholder="e.g., 5" min="1">
                     </div>
-                    <div class="cart-summary" style="margin-top: 20px;">
+                    <div class="form-group">
+                        <label>Payment Method</label>
+                        <div class="payment-methods">
+                            <button class="payment-btn" data-method="Cash">Cash</button>
+                            <button class="payment-btn" data-method="ABA Pay">ABA Pay / QR</button>
+                        </div>
+                    </div>
+                    <div class="cart-summary">
                         <div class="summary-row">
                             <span style="font-weight: 600; font-size: 1.1rem;">Total</span>
                             <div>
-                                <span id="cart-total-usd">$0.00</span>
-                                <span id="cart-total-khr">*៛0</span>
+                               <span id="cart-total-usd" style="font-weight:700; font-size:1.4rem; text-align:right; display:block;">$0.00</span>
+                               <span id="cart-total-khr" style="color:var(--text-secondary); text-align:right; display:block;">*៛0</span>
                             </div>
                         </div>
                     </div>
                     <button id="submit-order-btn" class="action-btn" disabled style="background-color: var(--success-color); color: white; margin-top: 20px;">Submit Order</button>
                 </div>
-                <!-- History Panel (unchanged from previous) -->
-                <div id="panel-history" class="sidebar-panel">
-                    <!-- History Content -->
+                <!-- History Panel -->
+                <div id="panel-history" class="sidebar-panel" style="display:none;">
+                     <div style="display:flex; gap:12px; margin-bottom:25px;">
+                         <button id="download-csv-btn" class="action-btn" style="background-color:var(--primary-color);color:white;">Download Report</button>
+                    </div>
+                    <div class="history-table-container">
+                        <table class="history-table">
+                            <thead><tr><th>Order ID</th><th>Table</th><th>Cashier</th><th>Payment</th><th>Total</th><th>Action</th></tr></thead>
+                            <tbody id="history-list"></tbody>
+                        </table>
+                    </div>
+                    <div class="grand-total">
+                        <span>Total Revenue (Paid)</span>
+                        <span id="grand-total-amount">$0.00</span>
+                    </div>
                 </div>
             </aside>
         </div>
@@ -174,245 +179,246 @@
 
     <!-- Receipt Modal -->
     <div class="receipt-modal-overlay" id="receipt-modal">
-        <div class="receipt-content" id="receipt-content">
-            <!-- Receipt will be dynamically generated here -->
-        </div>
+        <div class="receipt-content" id="receipt-content"></div>
     </div>
 
-
     <script>
-    document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', () => {
 
-        const KHR_RATE = 4100;
-        let cart = [];
-        let orderHistory = [];
-        let currentLanguage = 'kh'; // Default language is Khmer
+            const KHR_RATE = 4100;
+            let cart = [];
+            let orderHistory = [];
+            let selectedPaymentMethod = null;
 
-        const menuData = [
-            // Sample Food
-            { id: 1, name: { kh: 'ប៊ឺហ្គឺសាច់គោ', en: 'Beef Burger', zh: '牛肉汉堡' }, price: 5.50, category: 'Food', img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?ixlib=rb-4.0.3&q=80&w=400' },
-            { id: 2, name: { kh: 'សាំងវិចមាន់', en: 'Chicken Sandwich', zh: '鸡肉三明治' }, price: 4.50, category: 'Food', img: 'https://images.unsplash.com/photo-1592415486689-125c589382fe?ixlib=rb-4.0.3&q=80&w=400' },
-            // Sample Drinks
-            { id: 3, name: { kh: 'កាហ្វេឡាតេ', en: 'Caffè Latte', zh: '拿铁咖啡' }, price: 2.50, category: 'Drinks', img: 'https://images.unsplash.com/photo-1572442388796-11668a67e23d?ixlib=rb-4.0.3&q=80&w=400' },
-            { id: 4, name: { kh: 'តែបៃតងទឹកដោះគោ', en: 'Matcha Latte', zh: '抹茶拿铁' }, price: 3.00, category: 'Drinks', img: 'https://images.unsplash.com/photo-1536256263959-770b48d82b0a?ixlib=rb-4.0.3&q=80&w=400' },
-            // Sample Snack
-            { id: 5, name: { kh: 'ដំឡូងបារាំងបំពង', en: 'French Fries', zh: '炸薯条' }, price: 2.00, category: 'Snack', img: 'https://images.unsplash.com/photo-1576107232684-827a33c82a2c?ixlib=rb-4.0.3&q=80&w=400' },
-            // Sample Promotion
-            { id: 6, name: { kh: 'កომបូ៖ ប៊ឺហ្គឺ + កូកា', en: 'Combo: Burger + Coke', zh: '套餐：汉堡+可乐' }, price: 6.00, category: 'Promotion', img: 'https://images.unsplash.com/photo-1550317138-10000687a72b?ixlib=rb-4.0.3&q=80&w=400' },
-        ];
-        
-        const dom = {
-            menuNav: document.getElementById('menu-nav'),
-            menuGrid: document.getElementById('menu-grid'),
-            cartItemsList: document.getElementById('cart-items'),
-            tableNumberInput: document.getElementById('table-number-input'),
-            submitOrderBtn: document.getElementById('submit-order-btn'),
-            langSwitcher: document.querySelector('.lang-switcher'),
-            receiptModal: document.getElementById('receipt-modal'),
-            receiptContent: document.getElementById('receipt-content'),
-        };
-
-        function formatKHR(usdAmount) {
-            return (usdAmount * KHR_RATE).toLocaleString('en-US', {maximumFractionDigits:0});
-        }
-        
-        function setLanguage(lang) {
-            currentLanguage = lang;
-            dom.langSwitcher.querySelectorAll('button').forEach(btn => btn.classList.toggle('active', btn.dataset.lang === lang));
-            renderMenu();
-            updateCartDisplay();
-        }
-
-        function renderMenu() {
-            const categories = ['Food', 'Drinks', 'Snack', 'Promotion'];
-            dom.menuNav.innerHTML = categories.map(cat => `<button class="category-btn" data-category="${cat}">${cat}</button>`).join('');
+            const menuData = [
+                { id: 1, name: { kh: 'ប៊ឺហ្គឺសាច់គោ', en: 'Beef Burger', zh: '牛肉汉堡', py: 'niúròu hànbǎo' }, price: 5.50, category: 'Food' },
+                { id: 2, name: { kh: 'គុយទាវសាច់គោ', en: 'Beef Noodle Soup', zh: '牛肉面', py: 'niúròu miàn' }, price: 4.00, category: 'Food' },
+                { id: 3, name: { kh: 'កាហ្វេឡាតេ', en: 'Caffè Latte', zh: '拿铁咖啡', py: 'nátiě kāfēi' }, price: 2.50, category: 'Drinks' },
+                { id: 4, name: { kh: 'តែគុជទឹកដោះគោ', en: 'Bubble Milk Tea', zh: '珍珠奶茶', py: 'zhēnzhū nǎichá' }, price: 2.75, category: 'Drinks' },
+                { id: 5, name: { kh: 'ដំឡូងបារាំងបំពង', en: 'French Fries', zh: '炸薯条', py: 'zhá shǔtiáo' }, price: 2.00, category: 'Snack' },
+                { id: 6, name: { kh: 'ឈុតអាហារថ្ងៃត្រង់', en: 'Lunch Set', zh: '午餐套餐', py: 'wǔcān tàocān' }, price: 6.50, category: 'Promotion' },
+            ];
             
-            dom.menuGrid.innerHTML = menuData.map(item => `
-                <div class="menu-item" data-id="${item.id}" data-category="${item.category}">
-                    <div class="menu-item-image"><img src="${item.img}" alt="${item.name.en}"></div>
-                    <div class="menu-item-content">
-                        <h3>${item.name[currentLanguage]}</h3>
-                        <div class="menu-item-footer">
-                            <div class="price-display">
-                                <div class="price-usd">$${item.price.toFixed(2)}</div>
-                                <div class="price-khr">*៛${formatKHR(item.price)}</div>
-                            </div>
-                            <div class="card-controls" data-id="${item.id}"></div>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-            updateAllMenuItemControls();
-            
-            // Set default active category
-            const defaultCategory = 'Food';
-            document.querySelector(`.category-btn[data-category="${defaultCategory}"]`).classList.add('active');
-            filterMenu(defaultCategory);
-        }
-
-        function filterMenu(category) {
-            document.querySelectorAll('.menu-item').forEach(item => {
-                item.classList.toggle('hidden', item.dataset.category !== category);
-            });
-        }
-
-        function updateAllMenuItemControls() {
-            // This function is the same as the previous version
-            document.querySelectorAll('.card-controls').forEach(controlContainer => {
-                const id = parseInt(controlContainer.dataset.id);
-                const itemInCart = cart.find(item => item.id === id);
-                if (itemInCart) {
-                    controlContainer.innerHTML = `<div class="quantity-adjuster"><button data-action="decrease-card">-</button><span>${itemInCart.quantity}</span><button data-action="increase-card">+</button></div>`;
-                } else {
-                    controlContainer.innerHTML = `<button class="add-btn" data-action="add-card">Add</button>`;
-                }
-            });
-        }
-        
-        function updateCartDisplay() {
-            if (cart.length === 0) {
-                dom.cartItemsList.innerHTML = `<li class="cart-empty-message">${{kh:'សូមជ្រើសរើសមុខទំនិញ', en:'Select items from the menu', zh:'请从菜单中选择项目'}[currentLanguage]}</li>`;
-            } else {
-                dom.cartItemsList.innerHTML = cart.map(item => `
-                    <li class="cart-item">
-                        <span class="item-name">${item.name[currentLanguage]} (x${item.quantity})</span>
-                        <div class="price-display">
-                            <span class="price-usd" style="font-size:1rem">$${(item.price * item.quantity).toFixed(2)}</span>
-                            <span class="price-khr" style="font-size:0.8rem">*៛${formatKHR(item.price * item.quantity)}</span>
-                        </div>
-                    </li>
-                `).join('');
-            }
-            updateCartTotals();
-            updateAllMenuItemControls();
-            saveState();
-        }
-
-        function updateCartTotals() {
-            const totalUSD = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            document.getElementById('cart-total-usd').textContent = `$${totalUSD.toFixed(2)}`;
-            document.getElementById('cart-total-khr').textContent = `*៛${formatKHR(totalUSD)}`;
-            dom.submitOrderBtn.disabled = cart.length === 0 || dom.tableNumberInput.value === '';
-        }
-
-        function submitOrder() {
-            const tableNumber = dom.tableNumberInput.value;
-            if (cart.length === 0 || tableNumber === '') return;
-            const totalUSD = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            
-            const order = {
-                orderId: getDailyOrderNumber(), tableNumber,
-                timestamp: new Date().toISOString(), lang: currentLanguage,
-                items: JSON.parse(JSON.stringify(cart)), totalUSD,
+            const dom = {
+                menuNav: document.getElementById('menu-nav'), menuGrid: document.getElementById('menu-grid'),
+                cartItemsList: document.getElementById('cart-items'), cashierInput: document.getElementById('cashier-name-input'),
+                tableInput: document.getElementById('table-number-input'), submitBtn: document.getElementById('submit-order-btn'),
+                paymentMethods: document.querySelector('.payment-methods'), historyList: document.getElementById('history-list'),
+                grandTotalEl: document.getElementById('grand-total-amount'), receiptModal: document.getElementById('receipt-modal'),
+                receiptContent: document.getElementById('receipt-content'),
             };
-            
-            orderHistory.push(order);
-            generateReceipt(order);
-            dom.receiptModal.style.display = 'flex';
-            cart = [];
-            dom.tableNumberInput.value = '';
-            updateCartDisplay();
-            // renderOrderHistory(); // Update history tab if visible
-            saveState();
-        }
-        
-        function generateReceipt(order) {
-            const date = new Date(order.timestamp);
-            const receiptHTML = `
-                <div class="receipt-header">
-                    <h2>The Artisan Code Cafe</h2>
-                    <p>Phnom Penh, Cambodia</p>
-                </div>
-                <div class="receipt-info">
-                    <div><span>Order ID:</span> <span>${order.orderId}</span></div>
-                    <div><span>Table:</span> <span>${order.tableNumber}</span></div>
-                    <div><span>Date:</span> <span>${date.toLocaleDateString()} ${date.toLocaleTimeString()}</span></div>
-                </div>
-                <table class="receipt-table">
-                    <thead><tr><th>Item</th><th>Qty</th><th>Price</th></tr></thead>
-                    <tbody>
-                        ${order.items.map(item => `
-                            <tr>
-                                <td>${item.name[order.lang]}</td>
-                                <td>${item.quantity}</td>
-                                <td>$${(item.price * item.quantity).toFixed(2)}</td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
-                <div class="receipt-totals">
-                    <div class="total-row">
-                        <span>TOTAL</span>
-                        <span>$${order.totalUSD.toFixed(2)}</span>
-                    </div>
-                    <div class="total-row-khr">
-                        <span>TOTAL (KHR)</span>
-                        <span>៛${formatKHR(order.totalUSD)}</span>
-                    </div>
-                </div>
-                <div class="receipt-footer">
-                    <p>Thank You For Your Visit!</p>
-                </div>
-                <div class="receipt-actions" style="margin-top:25px; display:flex; gap:12px;">
-                    <button id="print-receipt-btn" class="action-btn" style="background-color:var(--success-color); color:white;">Print</button>
-                    <button id="close-receipt-btn" class="action-btn" style="background-color:#6c757d; color:white;">Close</button>
-                </div>
-            `;
-            dom.receiptContent.innerHTML = receiptHTML;
-            // Re-add event listeners for new buttons
-            document.getElementById('print-receipt-btn').addEventListener('click', () => window.print());
-            document.getElementById('close-receipt-btn').addEventListener('click', () => dom.receiptModal.style.display = 'none');
-        }
-        
-        // --- EVENT LISTENERS ---
-        dom.langSwitcher.addEventListener('click', e => {
-            if (e.target.matches('button')) setLanguage(e.target.dataset.lang);
-        });
 
-        dom.menuNav.addEventListener('click', e => {
-            if (e.target.matches('.category-btn')) {
-                const selectedCategory = e.target.dataset.category;
-                document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
-                e.target.classList.add('active');
-                filterMenu(selectedCategory);
+            function formatKHR(usd) { return (usd * KHR_RATE).toLocaleString('en-US',{maximumFractionDigits:0}); }
+
+            function renderMenu() {
+                dom.menuNav.innerHTML = ['Food', 'Drinks', 'Snack', 'Promotion'].map(c => `<button class="category-btn" data-category="${c}">${c}</button>`).join('');
+                dom.menuGrid.innerHTML = menuData.map(item => `
+                    <div class="menu-item" data-id="${item.id}" data-category="${item.category}">
+                        <div class="menu-item-content">
+                            <div class="menu-item-names">
+                                <div class="lang-kh">${item.name.kh}</div>
+                                <div class="lang-en">${item.name.en}</div>
+                                <div class="lang-zh">${item.name.zh} <span class="lang-py">(${item.name.py})</span></div>
+                            </div>
+                            <div class="menu-item-footer">
+                                <div class="price-display">
+                                    <div class="price-usd">$${item.price.toFixed(2)}</div>
+                                    <div class="price-khr">*៛${formatKHR(item.price)}</div>
+                                </div>
+                                <div class="card-controls" data-id="${item.id}"></div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+                updateAllMenuItemControls();
+                document.querySelector('.category-btn[data-category="Food"]').click();
             }
-        });
 
-        dom.tableNumberInput.addEventListener('input', updateCartTotals);
-        dom.submitOrderBtn.addEventListener('click', submitOrder);
-        // Add listeners for menu interaction, history, etc. similar to the previous version.
-        dom.menuGrid.addEventListener('click', e => {
-            const target = e.target;
-            if (target.matches('button')) {
-                const id = parseInt(target.closest('.card-controls').dataset.id);
-                const action = target.dataset.action;
-                // Simplified handleMenuInteraction from previous version
+            function updateAllMenuItemControls() {
+                document.querySelectorAll('.card-controls').forEach(c => {
+                    const id = parseInt(c.dataset.id); const item = cart.find(i => i.id === id);
+                    c.innerHTML = item ? `<div class="quantity-adjuster"><button data-action="decrease">-</button><span>${item.quantity}</span><button data-action="increase">+</button></div>` : `<button class="add-btn" data-action="add">Add</button>`;
+                });
+            }
+            
+            function updateCartDisplay() {
+                dom.cartItemsList.innerHTML = cart.length ? cart.map(item => `<li class="cart-item"><span>${item.name.en} (x${item.quantity})</span><span>$${(item.price * item.quantity).toFixed(2)}</span></li>`).join('') : `<li class="cart-empty-message">សូមជ្រើសរើសមុខទំនិញ</li>`;
+                updateCartTotals(); updateAllMenuItemControls(); saveState();
+            }
+
+            function updateCartTotals() {
+                const totalUSD = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                document.getElementById('cart-total-usd').textContent = `$${totalUSD.toFixed(2)}`;
+                document.getElementById('cart-total-khr').textContent = `*៛${formatKHR(totalUSD)}`;
+                dom.submitBtn.disabled = cart.length === 0 || !dom.tableInput.value || !dom.cashierInput.value || !selectedPaymentMethod;
+            }
+
+            function handleMenuInteraction(id, action) {
                 const itemInCart = cart.find(item => item.id === id);
-                if (action === 'add-card' && !itemInCart) cart.push({ ...menuData.find(item => item.id === id), quantity: 1 });
-                else if(itemInCart) {
-                    if (action === 'increase-card') itemInCart.quantity++;
-                    if (action === 'decrease-card') {
+                if (action === 'add' && !itemInCart) cart.push({ ...menuData.find(item => item.id === id), quantity: 1 });
+                else if (itemInCart) {
+                    if (action === 'increase') itemInCart.quantity++;
+                    if (action === 'decrease') {
                         itemInCart.quantity--;
                         if (itemInCart.quantity === 0) cart = cart.filter(item => item.id !== id);
                     }
                 }
                 updateCartDisplay();
             }
+
+            function submitOrder() {
+                if (dom.submitBtn.disabled) return;
+                const totalUSD = cart.reduce((sum, i) => sum + (i.price * i.quantity), 0);
+                const order = {
+                    orderId: getDailyOrderNumber(), cashier: dom.cashierInput.value, tableNumber: dom.tableInput.value,
+                    paymentMethod: selectedPaymentMethod, timestamp: new Date().toISOString(),
+                    items: JSON.parse(JSON.stringify(cart)), totalUSD, status: 'Paid'
+                };
+                orderHistory.push(order);
+                generateReceipt(order);
+                dom.receiptModal.style.display = 'flex';
+                resetCart();
+                saveState();
+            }
+            
+            function resetCart() {
+                cart = []; dom.tableInput.value = ''; dom.cashierInput.value = ''; selectedPaymentMethod = null;
+                dom.paymentMethods.querySelectorAll('.payment-btn').forEach(b => b.classList.remove('selected'));
+                updateCartDisplay();
+            }
+
+            function generateReceipt(order) {
+                const date = new Date(order.timestamp);
+                dom.receiptContent.innerHTML = `
+                    <div class="receipt-header"><h2>អាហារដ្ឋានស៊ីជម្ពូរ</h2><p>Thank You!</p></div>
+                    <div class="receipt-info">
+                        <div><span>Order:</span> <span>${order.orderId}</span></div>
+                        <div><span>Table:</span> <span>${order.tableNumber}</span></div>
+                        <div><span>Cashier:</span> <span>${order.cashier}</span></div>
+                        <div><span>Date:</span> <span>${date.toLocaleString('en-GB')}</span></div>
+                        <div><span>Payment:</span> <span>${order.paymentMethod}</span></div>
+                    </div>
+                    <table class="receipt-table">
+                        <thead><tr><th>Item</th><th class="col-qty">Qty</th><th class="col-price">Price</th></tr></thead>
+                        <tbody>${order.items.map(i => `<tr><td>${i.name.en}</td><td class="col-qty">${i.quantity}</td><td class="col-price">$${(i.price * i.quantity).toFixed(2)}</td></tr>`).join('')}</tbody>
+                    </table>
+                    <div class="receipt-totals">
+                        <div class="total-row"><span>TOTAL</span><span>$${order.totalUSD.toFixed(2)}</span></div>
+                        <div class="total-row-khr"><span></span><span>៛${formatKHR(order.totalUSD)}</span></div>
+                    </div>
+                    <div class="receipt-footer"><p>Follow us @SeeChompooCafe</p></div>
+                    <div class="receipt-actions" style="margin-top:25px; display:flex; gap:12px;">
+                        <button id="print-receipt-btn" class="action-btn" style="background-color:var(--success-color); color:white;">Print</button>
+                        <button id="close-receipt-btn" class="action-btn" style="background-color:#6c757d; color:white;">Close</button>
+                    </div>`;
+                document.getElementById('print-receipt-btn').addEventListener('click', () => window.print());
+                document.getElementById('close-receipt-btn').addEventListener('click', () => dom.receiptModal.style.display = 'none');
+            }
+
+            function renderOrderHistory() {
+                dom.historyList.innerHTML = orderHistory.slice().reverse().map(order => `
+                    <tr class="${order.status === 'Voided' ? 'voided-order' : ''}" data-order-id="${order.orderId}">
+                        <td>${order.orderId}</td><td>${order.tableNumber}</td><td>${order.cashier}</td>
+                        <td>${order.paymentMethod}</td><td>$${order.totalUSD.toFixed(2)}</td>
+                        <td><button class="void-btn" ${order.status === 'Voided' ? 'disabled' : ''}>Void</button></td>
+                    </tr>`).join('');
+                const totalRevenue = orderHistory.filter(o => o.status === 'Paid').reduce((sum, o) => sum + o.totalUSD, 0);
+                dom.grandTotalEl.textContent = `$${totalRevenue.toFixed(2)}`;
+                document.getElementById('download-csv-btn').disabled = orderHistory.length === 0;
+            }
+
+            function voidOrder(orderId) {
+                const order = orderHistory.find(o => o.orderId === orderId);
+                if (order && confirm(`Are you sure you want to void Order ID: ${orderId}? This cannot be undone.`)) {
+                    order.status = 'Voided';
+                    renderOrderHistory(); saveState();
+                }
+            }
+            
+            function downloadItemizedReportCSV() {
+                if (orderHistory.length === 0) return alert("No history to download.");
+                let csvContent = "OrderID,Date,Time,Cashier,Table,Payment,Status,ItemName_EN,Quantity,UnitPrice_USD,LineTotal_USD\n";
+                orderHistory.forEach(order => {
+                    const date = new Date(order.timestamp);
+                    order.items.forEach(item => {
+                        const row = [
+                            order.orderId, date.toLocaleDateString('en-CA'), date.toLocaleTimeString('en-GB'), `"${order.cashier}"`,
+                            order.tableNumber, order.paymentMethod, order.status, `"${item.name.en}"`, item.quantity,
+                            item.price.toFixed(2), (item.price * item.quantity).toFixed(2)
+                        ].join(',');
+                        csvContent += row + "\n";
+                    });
+                });
+                const link = document.createElement("a");
+                link.setAttribute("href", 'data:text/csv;charset=utf-8,' + encodeURI(csvContent));
+                link.setAttribute("download", `Itemized_Sales_Report_${new Date().toISOString().split('T')[0]}.csv`);
+                link.click();
+            }
+
+            // --- EVENT LISTENERS ---
+             document.querySelector('.sidebar-tabs').addEventListener('click', e => {
+                if(e.target.matches('.tab-btn')) {
+                    const tab = e.target.dataset.tab;
+                    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                    document.querySelectorAll('.sidebar-panel').forEach(p => p.style.display = 'none');
+                    e.target.classList.add('active');
+                    document.getElementById(`panel-${tab}`).style.display = 'block';
+
+                    if (tab === 'history') {
+                        renderOrderHistory();
+                    }
+                }
+            });
+
+            dom.menuNav.addEventListener('click', e => {
+                if (e.target.matches('.category-btn')) {
+                    dom.menuNav.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+                    const cat = e.target.dataset.category;
+                    document.querySelectorAll('.menu-item').forEach(i => i.classList.toggle('hidden', i.dataset.category !== cat));
+                }
+            });
+            dom.menuGrid.addEventListener('click', e => {
+                if (e.target.matches('button')) handleMenuInteraction(parseInt(e.target.closest('.card-controls').dataset.id), e.target.dataset.action);
+            });
+            ['input', 'change'].forEach(evt => {
+                dom.cashierInput.addEventListener(evt, updateCartTotals);
+                dom.tableInput.addEventListener(evt, updateCartTotals);
+            });
+            dom.paymentMethods.addEventListener('click', e => {
+                if (e.target.matches('.payment-btn')) {
+                    dom.paymentMethods.querySelectorAll('.payment-btn').forEach(b => b.classList.remove('selected'));
+                    e.target.classList.add('selected');
+                    selectedPaymentMethod = e.target.dataset.method;
+                    updateCartTotals();
+                }
+            });
+            dom.historyList.addEventListener('click', e => {
+                if (e.target.matches('.void-btn')) voidOrder(e.target.closest('tr').dataset.orderId);
+            });
+            dom.submitBtn.addEventListener('click', submitOrder);
+            document.getElementById('download-csv-btn').addEventListener('click', downloadItemizedReportCSV);
+            
+            // --- UTILITY & STATE FUNCTIONS ---
+            function getDailyOrderNumber() {
+                const today = new Date().toISOString().split('T')[0];
+                const lastDate = localStorage.getItem('pos_lastDate');
+                let num = 1;
+                if (today === lastDate) num = parseInt(localStorage.getItem('pos_lastNum') || '0') + 1;
+                localStorage.setItem('pos_lastDate', today); localStorage.setItem('pos_lastNum', num);
+                return `${today.substring(8,10)}${today.substring(5,7)}-${String(num).padStart(3,'0')}`;
+            }
+            function saveState() { localStorage.setItem('pos_orderHistory', JSON.stringify(orderHistory)); }
+            function loadState() { orderHistory = JSON.parse(localStorage.getItem('pos_orderHistory') || '[]'); }
+
+            // --- INITIALIZATION ---
+            loadState();
+            renderMenu();
+            updateCartDisplay();
+            // Initial render of history for the panel to not be empty on first load
+            renderOrderHistory(); 
+            setInterval(() => { document.getElementById('current-time').textContent = new Date().toLocaleTimeString('en-GB'); }, 1000);
         });
-        
-        // --- LOCAL STORAGE AND UTILITY FUNCTIONS ---
-        // getDailyOrderNumber, saveState, loadState, etc. would be here, same as previous version.
-        function getDailyOrderNumber() { /* ... unchanged ... */ return Date.now().toString().slice(-6); } // Simplified for example
-        function saveState() { /* ... unchanged ... */ }
-        function loadState() { /* ... unchanged ... */ }
-
-
-        // --- INITIALIZATION ---
-        // loadState();
-        setLanguage(currentLanguage); // This now calls renderMenu and updateCartDisplay
-        // renderOrderHistory();
-        setInterval(() => { document.getElementById('current-time').textContent = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute:'2-digit' }); }, 1000);
-    });
     </script>
 </body>
 </html>
