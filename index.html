@@ -6,13 +6,19 @@
     <title>អាហារដ្ឋានស៊ីជម្ពូរ | Business POS</title>
     
     <style>
-        /* --- PROFESSIONAL DESIGN SYSTEM v5.0 (FINAL) --- */
+        /* --- PROFESSIONAL DESIGN SYSTEM v6.1 (Simplified) --- */
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Noto+Sans+Khmer:wght@400;500;700&family=Roboto+Mono:wght@400;700&display=swap');
         :root {
-            --bg-color: #f4f7f9; --surface-color: #ffffff; --primary-color: #d63384; --primary-light: #fce4ec;
-            --text-primary: #1e293b; --text-secondary: #64748b; --border-color: #e2e8f0; --success-color: #198754;
-            --danger-color: #dc3545; --shadow: 0 10px 30px rgba(0, 0, 0, 0.07); --border-radius: 12px;
-            --font-main: 'Poppins', 'Noto Sans Khmer', sans-serif; --font-mono: 'Roboto Mono', monospace;
+            --primary-color: #0D5EA6;      /* Deep Blue */
+            --accent-color: #EAA64D;       /* Bright Gold */
+            --secondary-accent-color: #C78A3B; /* Muted Bronze */
+            --text-primary: #A16D28;        /* Dark Brown */
+            
+            --bg-color: #f8f9fa; --surface-color: #ffffff; --primary-light: #e7f0f9;
+            --text-secondary: #6c757d; --border-color: #e2e8f0; --success-color: #198754;
+            --danger-color: #dc3545; --shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
+            --border-radius: 12px; --font-main: 'Poppins', 'Noto Sans Khmer', sans-serif;
+            --font-mono: 'Roboto Mono', monospace;
         }
         *, *::before, *::after { box-sizing: border-box; }
         html { scroll-behavior: smooth; }
@@ -26,20 +32,20 @@
 
         /* --- MENU SECTION --- */
         .menu-nav { display: flex; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; }
-        .category-btn { padding: 10px 25px; border: 1px solid var(--border-color); background-color: var(--surface-color); border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease; }
+        .category-btn { padding: 10px 25px; border: 1px solid var(--border-color); background-color: var(--surface-color); border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease; color: var(--primary-color); }
         .category-btn.active { background-color: var(--primary-color); color: white; border-color: var(--primary-color); transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         .menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; }
         .menu-item { background-color: var(--surface-color); border-radius: var(--border-radius); box-shadow: var(--shadow); display: flex; flex-direction: column; }
         .menu-item.hidden { display: none; }
         .menu-item-content { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; }
         .menu-item-names { margin-bottom: 15px; flex-grow: 1; }
-        .lang-kh { font-size: 1.4rem; font-weight: 700; color: var(--text-primary); }
-        .lang-en { font-size: 1.1rem; font-weight: 500; color: var(--text-secondary); }
-        .lang-zh { font-size: 1.1rem; color: var(--text-secondary); }
-        .lang-py { font-size: 0.9rem; font-style: italic; color: #a0a0a0; }
+        .lang-kh { font-size: 1.4rem; font-weight: 700; }
+        .lang-en { font-size: 1.1rem; font-weight: 500; }
+        .lang-zh { font-size: 1.1rem; }
+        .lang-py { font-size: 0.9rem; font-style: italic; color: #b0b0b0; }
         .menu-item-footer { display: flex; justify-content: space-between; align-items: center; }
         .price-display .price-usd { font-weight: 700; font-size: 1.4rem; color: var(--primary-color); }
-        .price-display .price-khr { font-size: 0.9rem; color: var(--text-secondary); }
+        .price-display .price-khr { font-size: 0.9rem; }
         .card-controls .add-btn { background-color: var(--primary-light); color: var(--primary-color); border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; }
         .card-controls .quantity-adjuster { display: flex; align-items: center; gap: 15px; }
         .card-controls .quantity-adjuster button { background-color: #f1f5f9; border: 1px solid var(--border-color); width: 36px; height: 36px; border-radius: 50%; font-size: 1.4rem; cursor: pointer; }
@@ -53,22 +59,19 @@
         .sidebar-panel.active { display: block; animation: fadeIn 0.4s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
-        #cart-items { list-style-type: none; padding: 0; margin: 0; max-height: 200px; overflow-y: auto; }
+        #cart-items { list-style-type: none; padding: 0; margin: 0; max-height: 400px; overflow-y: auto; }
         .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; }
         .cart-item:not(:last-child) { border-bottom: 1px solid var(--border-color); }
         .form-group { margin-top: 20px; }
         .form-group label { font-weight: 600; display: block; margin-bottom: 8px; }
         .form-group input { width: 100%; padding: 12px; font-size: 1rem; border: 1px solid var(--border-color); border-radius: 8px; }
-        .payment-methods { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .payment-btn { padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; background-color: #f8f9fa; font-weight: 500; cursor: pointer; text-align: center;}
-        .payment-btn.selected { background-color: var(--primary-light); border-color: var(--primary-color); font-weight: 600; }
         .cart-summary { border-top: 1px solid var(--border-color); margin-top: 20px; padding-top: 20px; }
         .summary-row { display: flex; justify-content: space-between; align-items: center; }
         .action-btn { width: 100%; padding: 15px; border: none; border-radius: 8px; font-size: 1rem; cursor: pointer; font-weight: 600; }
         .action-btn:disabled { opacity: 0.6; cursor: not-allowed; background-color: #ced4da !important; color: var(--text-secondary) !important; }
 
         /* --- HISTORY PANEL --- */
-        .history-table-container { max-height: 400px; overflow-y: auto; }
+        .history-table-container { max-height: 450px; overflow-y: auto; }
         .history-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
         .history-table th, .history-table td { padding: 10px; text-align: left; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
         .history-table td:last-child { text-align: center; }
@@ -78,8 +81,8 @@
         .grand-total { margin-top: 20px; padding: 20px; background-color: var(--primary-light); border-radius: 8px; display: flex; justify-content: space-between; align-items: center; }
         #grand-total-amount { font-weight: 700; font-size: 1.5rem; color: var(--primary-color); }
 
-        /* --- RECEIPT STYLES --- */
-        .receipt-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(30, 41, 59, 0.6); backdrop-filter: blur(5px); display: none; justify-content: center; align-items: center; z-index: 1000; }
+        /* --- RECEIPT MODAL --- */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(30, 41, 59, 0.6); backdrop-filter: blur(5px); display: none; justify-content: center; align-items: center; z-index: 1000; }
         .receipt-content { background: #fff; width: 90%; max-width: 380px; padding: 20px; font-family: var(--font-mono); color: #000; }
         .receipt-header { text-align: center; margin-bottom: 15px; }
         .receipt-header h2 { font-family: 'Noto Sans Khmer', serif; font-size: 2rem; color: #000; margin: 0; }
@@ -94,17 +97,6 @@
         .receipt-totals .total-row { display: flex; justify-content: space-between; font-weight: bold; font-size: 1.2rem; }
         .receipt-totals .total-row-khr { display: flex; justify-content: space-between; }
         .receipt-footer { text-align: center; margin-top: 20px; font-size: 0.85rem; }
-        
-        /* --- RESPONSIVENESS & PRINT --- */
-        @media (max-width: 1200px) { .main-content { grid-template-columns: 1fr; } .sidebar { position: static; margin-top: 30px; } }
-        @media (max-width: 768px) { .main-header { flex-direction: column; gap: 15px; } }
-        @media print {
-            body * { visibility: hidden; }
-            .receipt-modal-overlay, .receipt-content, .receipt-content * { visibility: visible; }
-            .receipt-modal-overlay { position: absolute; left: 0; top: 0; width: 100%; background: none; backdrop-filter: none; display: flex !important; }
-            .receipt-content { width: 100%; max-width: 100%; box-shadow: none; border: none; margin: 0; padding: 0; border-radius: 0; }
-            .receipt-actions { display: none; }
-        }
     </style>
 </head>
 <body>
@@ -132,19 +124,8 @@
                 <div id="panel-cart" class="sidebar-panel active">
                     <ul id="cart-items"><li class="cart-empty-message">សូមជ្រើសរើសមុខទំនិញ</li></ul>
                     <div class="form-group">
-                        <label for="cashier-name-input">Cashier Name</label>
-                        <input type="text" id="cashier-name-input" placeholder="e.g., Srey Leak">
-                    </div>
-                    <div class="form-group">
                         <label for="table-number-input">Table Number</label>
                         <input type="number" id="table-number-input" placeholder="e.g., 5" min="1">
-                    </div>
-                    <div class="form-group">
-                        <label>Payment Method</label>
-                        <div class="payment-methods">
-                            <button class="payment-btn" data-method="Cash">Cash</button>
-                            <button class="payment-btn" data-method="ABA Pay">ABA Pay / QR</button>
-                        </div>
                     </div>
                     <div class="cart-summary">
                         <div class="summary-row">
@@ -155,16 +136,16 @@
                             </div>
                         </div>
                     </div>
-                    <button id="submit-order-btn" class="action-btn" disabled style="background-color: var(--success-color); color: white; margin-top: 20px;">Submit Order</button>
+                    <button id="submit-order-btn" class="action-btn" disabled style="background-color: var(--accent-color); color: white; margin-top: 20px;">Submit Order</button>
                 </div>
                 <!-- History Panel -->
                 <div id="panel-history" class="sidebar-panel" style="display:none;">
                      <div style="display:flex; gap:12px; margin-bottom:25px;">
-                         <button id="download-csv-btn" class="action-btn" style="background-color:var(--primary-color);color:white;">Download Report</button>
+                         <button id="download-csv-btn" class="action-btn" style="background-color:var(--secondary-accent-color);color:white;">Download Report</button>
                     </div>
                     <div class="history-table-container">
                         <table class="history-table">
-                            <thead><tr><th>Order ID</th><th>Table</th><th>Cashier</th><th>Payment</th><th>Total</th><th>Action</th></tr></thead>
+                            <thead><tr><th>Order ID</th><th>Table</th><th>Date</th><th>Total</th><th>Action</th></tr></thead>
                             <tbody id="history-list"></tbody>
                         </table>
                     </div>
@@ -176,11 +157,12 @@
             </aside>
         </div>
     </main>
-
+    
     <!-- Receipt Modal -->
-    <div class="receipt-modal-overlay" id="receipt-modal">
+    <div class="modal-overlay" id="receipt-modal">
         <div class="receipt-content" id="receipt-content"></div>
     </div>
+
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -188,7 +170,6 @@
             const KHR_RATE = 4100;
             let cart = [];
             let orderHistory = [];
-            let selectedPaymentMethod = null;
 
             const menuData = [
                 { id: 1, name: { kh: 'ប៊ឺហ្គឺសាច់គោ', en: 'Beef Burger', zh: '牛肉汉堡', py: 'niúròu hànbǎo' }, price: 5.50, category: 'Food' },
@@ -201,10 +182,10 @@
             
             const dom = {
                 menuNav: document.getElementById('menu-nav'), menuGrid: document.getElementById('menu-grid'),
-                cartItemsList: document.getElementById('cart-items'), cashierInput: document.getElementById('cashier-name-input'),
+                cartItemsList: document.getElementById('cart-items'),
                 tableInput: document.getElementById('table-number-input'), submitBtn: document.getElementById('submit-order-btn'),
-                paymentMethods: document.querySelector('.payment-methods'), historyList: document.getElementById('history-list'),
-                grandTotalEl: document.getElementById('grand-total-amount'), receiptModal: document.getElementById('receipt-modal'),
+                historyList: document.getElementById('history-list'), grandTotalEl: document.getElementById('grand-total-amount'),
+                receiptModal: document.getElementById('receipt-modal'),
                 receiptContent: document.getElementById('receipt-content'),
             };
 
@@ -242,7 +223,7 @@
             }
             
             function updateCartDisplay() {
-                dom.cartItemsList.innerHTML = cart.length ? cart.map(item => `<li class="cart-item"><span>${item.name.en} (x${item.quantity})</span><span>$${(item.price * item.quantity).toFixed(2)}</span></li>`).join('') : `<li class="cart-empty-message">សូមជ្រើសរើសមុខទំនិញ</li>`;
+                 dom.cartItemsList.innerHTML = cart.length ? cart.map(item => `<li class="cart-item"><span>${item.name.en} (x${item.quantity})</span><span>$${(item.price * item.quantity).toFixed(2)}</span></li>`).join('') : `<li class="cart-empty-message">សូមជ្រើសរើសមុខទំនិញ</li>`;
                 updateCartTotals(); updateAllMenuItemControls(); saveState();
             }
 
@@ -250,7 +231,7 @@
                 const totalUSD = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
                 document.getElementById('cart-total-usd').textContent = `$${totalUSD.toFixed(2)}`;
                 document.getElementById('cart-total-khr').textContent = `*៛${formatKHR(totalUSD)}`;
-                dom.submitBtn.disabled = cart.length === 0 || !dom.tableInput.value || !dom.cashierInput.value || !selectedPaymentMethod;
+                dom.submitBtn.disabled = cart.length === 0 || !dom.tableInput.value;
             }
 
             function handleMenuInteraction(id, action) {
@@ -270,8 +251,8 @@
                 if (dom.submitBtn.disabled) return;
                 const totalUSD = cart.reduce((sum, i) => sum + (i.price * i.quantity), 0);
                 const order = {
-                    orderId: getDailyOrderNumber(), cashier: dom.cashierInput.value, tableNumber: dom.tableInput.value,
-                    paymentMethod: selectedPaymentMethod, timestamp: new Date().toISOString(),
+                    orderId: getDailyOrderNumber(), tableNumber: dom.tableInput.value,
+                    timestamp: new Date().toISOString(),
                     items: JSON.parse(JSON.stringify(cart)), totalUSD, status: 'Paid'
                 };
                 orderHistory.push(order);
@@ -282,21 +263,18 @@
             }
             
             function resetCart() {
-                cart = []; dom.tableInput.value = ''; dom.cashierInput.value = ''; selectedPaymentMethod = null;
-                dom.paymentMethods.querySelectorAll('.payment-btn').forEach(b => b.classList.remove('selected'));
+                cart = []; dom.tableInput.value = ''; 
                 updateCartDisplay();
             }
 
             function generateReceipt(order) {
-                const date = new Date(order.timestamp);
+                 const date = new Date(order.timestamp);
                 dom.receiptContent.innerHTML = `
                     <div class="receipt-header"><h2>អាហារដ្ឋានស៊ីជម្ពូរ</h2><p>Thank You!</p></div>
                     <div class="receipt-info">
                         <div><span>Order:</span> <span>${order.orderId}</span></div>
                         <div><span>Table:</span> <span>${order.tableNumber}</span></div>
-                        <div><span>Cashier:</span> <span>${order.cashier}</span></div>
                         <div><span>Date:</span> <span>${date.toLocaleString('en-GB')}</span></div>
-                        <div><span>Payment:</span> <span>${order.paymentMethod}</span></div>
                     </div>
                     <table class="receipt-table">
                         <thead><tr><th>Item</th><th class="col-qty">Qty</th><th class="col-price">Price</th></tr></thead>
@@ -316,10 +294,11 @@
             }
 
             function renderOrderHistory() {
-                dom.historyList.innerHTML = orderHistory.slice().reverse().map(order => `
+                 dom.historyList.innerHTML = orderHistory.slice().reverse().map(order => `
                     <tr class="${order.status === 'Voided' ? 'voided-order' : ''}" data-order-id="${order.orderId}">
-                        <td>${order.orderId}</td><td>${order.tableNumber}</td><td>${order.cashier}</td>
-                        <td>${order.paymentMethod}</td><td>$${order.totalUSD.toFixed(2)}</td>
+                        <td>${order.orderId}</td><td>${order.tableNumber}</td>
+                        <td>${new Date(order.timestamp).toLocaleDateString('en-GB')}</td>
+                        <td>$${order.totalUSD.toFixed(2)}</td>
                         <td><button class="void-btn" ${order.status === 'Voided' ? 'disabled' : ''}>Void</button></td>
                     </tr>`).join('');
                 const totalRevenue = orderHistory.filter(o => o.status === 'Paid').reduce((sum, o) => sum + o.totalUSD, 0);
@@ -337,13 +316,13 @@
             
             function downloadItemizedReportCSV() {
                 if (orderHistory.length === 0) return alert("No history to download.");
-                let csvContent = "OrderID,Date,Time,Cashier,Table,Payment,Status,ItemName_EN,Quantity,UnitPrice_USD,LineTotal_USD\n";
+                let csvContent = "OrderID,Date,Time,Table,Status,ItemName_EN,Quantity,UnitPrice_USD,LineTotal_USD\n";
                 orderHistory.forEach(order => {
                     const date = new Date(order.timestamp);
                     order.items.forEach(item => {
                         const row = [
-                            order.orderId, date.toLocaleDateString('en-CA'), date.toLocaleTimeString('en-GB'), `"${order.cashier}"`,
-                            order.tableNumber, order.paymentMethod, order.status, `"${item.name.en}"`, item.quantity,
+                            order.orderId, date.toLocaleDateString('en-CA'), date.toLocaleTimeString('en-GB'),
+                            order.tableNumber, order.status, `"${item.name.en}"`, item.quantity,
                             item.price.toFixed(2), (item.price * item.quantity).toFixed(2)
                         ].join(',');
                         csvContent += row + "\n";
@@ -356,17 +335,14 @@
             }
 
             // --- EVENT LISTENERS ---
-             document.querySelector('.sidebar-tabs').addEventListener('click', e => {
+            document.querySelector('.sidebar-tabs').addEventListener('click', e => {
                 if(e.target.matches('.tab-btn')) {
                     const tab = e.target.dataset.tab;
                     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
                     document.querySelectorAll('.sidebar-panel').forEach(p => p.style.display = 'none');
                     e.target.classList.add('active');
                     document.getElementById(`panel-${tab}`).style.display = 'block';
-
-                    if (tab === 'history') {
-                        renderOrderHistory();
-                    }
+                    if (tab === 'history') { renderOrderHistory(); }
                 }
             });
 
@@ -381,18 +357,7 @@
             dom.menuGrid.addEventListener('click', e => {
                 if (e.target.matches('button')) handleMenuInteraction(parseInt(e.target.closest('.card-controls').dataset.id), e.target.dataset.action);
             });
-            ['input', 'change'].forEach(evt => {
-                dom.cashierInput.addEventListener(evt, updateCartTotals);
-                dom.tableInput.addEventListener(evt, updateCartTotals);
-            });
-            dom.paymentMethods.addEventListener('click', e => {
-                if (e.target.matches('.payment-btn')) {
-                    dom.paymentMethods.querySelectorAll('.payment-btn').forEach(b => b.classList.remove('selected'));
-                    e.target.classList.add('selected');
-                    selectedPaymentMethod = e.target.dataset.method;
-                    updateCartTotals();
-                }
-            });
+            dom.tableInput.addEventListener('input', updateCartTotals);
             dom.historyList.addEventListener('click', e => {
                 if (e.target.matches('.void-btn')) voidOrder(e.target.closest('tr').dataset.orderId);
             });
@@ -402,20 +367,19 @@
             // --- UTILITY & STATE FUNCTIONS ---
             function getDailyOrderNumber() {
                 const today = new Date().toISOString().split('T')[0];
-                const lastDate = localStorage.getItem('pos_lastDate');
+                const lastDate = localStorage.getItem('pos_lastDate_v2');
                 let num = 1;
-                if (today === lastDate) num = parseInt(localStorage.getItem('pos_lastNum') || '0') + 1;
-                localStorage.setItem('pos_lastDate', today); localStorage.setItem('pos_lastNum', num);
+                if (today === lastDate) num = parseInt(localStorage.getItem('pos_lastNum_v2') || '0') + 1;
+                localStorage.setItem('pos_lastDate_v2', today); localStorage.setItem('pos_lastNum_v2', num);
                 return `${today.substring(8,10)}${today.substring(5,7)}-${String(num).padStart(3,'0')}`;
             }
-            function saveState() { localStorage.setItem('pos_orderHistory', JSON.stringify(orderHistory)); }
-            function loadState() { orderHistory = JSON.parse(localStorage.getItem('pos_orderHistory') || '[]'); }
+            function saveState() { localStorage.setItem('pos_orderHistory_v2', JSON.stringify(orderHistory)); }
+            function loadState() { orderHistory = JSON.parse(localStorage.getItem('pos_orderHistory_v2') || '[]'); }
 
             // --- INITIALIZATION ---
             loadState();
             renderMenu();
             updateCartDisplay();
-            // Initial render of history for the panel to not be empty on first load
             renderOrderHistory(); 
             setInterval(() => { document.getElementById('current-time').textContent = new Date().toLocaleTimeString('en-GB'); }, 1000);
         });
