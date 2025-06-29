@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>អាហារដ្ឋានស៊ីជម្ពូរ | Business POS</title>
+    <title>អាហារដ្ឋានដើមជម្ពូរ | Business POS</title>
     
     <style>
         /* --- PROFESSIONAL DESIGN SYSTEM v6.1 (Simplified) --- */
@@ -60,7 +60,9 @@
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
         #cart-items { list-style-type: none; padding: 0; margin: 0; max-height: 350px; overflow-y: auto; }
-        .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; font-size: 1.1rem; }
+        .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; }
+        /* Adjusted cart item name span to prevent long Khmer words from breaking layout */
+        .cart-item-name { flex-grow: 1; margin-right: 10px; word-break: break-word; }
         .cart-item:not(:last-child) { border-bottom: 1px solid var(--border-color); }
         .cart-empty-message { color: var(--text-secondary); text-align: center; padding: 40px 0; font-style: italic; }
         .form-group { margin-top: 20px; }
@@ -71,7 +73,7 @@
         .action-btn { width: 100%; padding: 15px; border: none; border-radius: 8px; font-size: 1rem; cursor: pointer; font-weight: 600; }
         .action-btn:disabled { opacity: 0.6; cursor: not-allowed; background-color: #ced4da !important; color: var(--text-secondary) !important; }
 
-        /* --- NEW: CART LANGUAGE SWITCHER --- */
+        /* --- CART LANGUAGE SWITCHER --- */
         .lang-switcher { display: flex; gap: 8px; margin-top: -10px; margin-bottom: 15px; }
         .lang-btn { flex: 1; padding: 8px; border: 1px solid var(--border-color); background: #f8f9fa; cursor: pointer; border-radius: 6px; font-weight: 600; transition: all 0.2s; }
         .lang-btn.active { background-color: var(--primary-light); color: var(--primary-color); border-color: var(--primary-color); }
@@ -89,78 +91,51 @@
 
         /* --- RECEIPT MODAL --- */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(30, 41, 59, 0.6); backdrop-filter: blur(5px); display: none; justify-content: center; align-items: center; z-index: 1000; }
-        .receipt-content { background: #fff; width: 90%; max-width: 380px; padding: 20px; font-family: var(--font-mono); color: #000; }
-        .receipt-header { text-align: center; margin-bottom: 15px; }
-        .receipt-header h2 { font-family: 'Noto Sans Khmer', serif; font-size: 2rem; color: #000; margin: 0; }
-        .receipt-info { border-top: 1px dashed #000; border-bottom: 1px dashed #000; padding: 8px 0; margin-bottom: 10px; font-size: 0.9rem; }
+        .receipt-content { background: #fff; width: 90%; max-width: 380px; padding: 20px; color: #000; }
+        /* Use main font for receipt for better Khmer display, mono for numbers */
+        .receipt-header { text-align: center; margin-bottom: 15px; font-family: var(--font-main); }
+        .receipt-header h2 { font-size: 2rem; color: #000; margin: 0; }
+        .receipt-info { border-top: 1px dashed #000; border-bottom: 1px dashed #000; padding: 8px 0; margin-bottom: 10px; font-size: 0.9rem; font-family: var(--font-main);}
         .receipt-info div { display: flex; justify-content: space-between; padding: 2px 0;}
-        .receipt-table { width: 100%; font-size: 0.9rem; border-collapse: collapse; }
-        .receipt-table th { text-align: left; padding: 5px 0; border-bottom: 1px solid #000; }
-        .receipt-table td { padding: 5px 0; }
+        .receipt-table { width: 100%; font-size: 0.9rem; border-collapse: collapse; font-family: var(--font-main); }
+        .receipt-table th { text-align: left; padding: 5px 0; border-bottom: 1px solid #000; font-weight: bold; }
+        .receipt-table td { padding: 5px 0; vertical-align: top;}
+        .receipt-table .col-qty, .receipt-table .col-price { font-family: var(--font-mono); }
         .receipt-table .col-qty { text-align: center; }
         .receipt-table .col-price { text-align: right; }
-        .receipt-totals { border-top: 1px dashed #000; margin-top: 10px; padding-top: 10px; }
+        .receipt-totals { border-top: 1px dashed #000; margin-top: 10px; padding-top: 10px; font-family: var(--font-main); }
         .receipt-totals .total-row { display: flex; justify-content: space-between; font-weight: bold; font-size: 1.2rem; }
+        .receipt-totals .total-row span:last-child { font-family: var(--font-mono); }
         .receipt-totals .total-row-khr { display: flex; justify-content: space-between; }
-        .receipt-footer { text-align: center; margin-top: 20px; font-size: 0.85rem; }
+        .receipt-totals .total-row-khr span:last-child { font-family: var(--font-mono); }
+        .receipt-footer { text-align: center; margin-top: 20px; font-size: 0.85rem; font-family: var(--font-main); }
 
-        /* --- NEW: MOBILE RESPONSIVE STYLES --- */
+        /* --- MOBILE RESPONSIVE STYLES --- */
         @media (max-width: 1024px) {
-            .main-content {
-                grid-template-columns: 1fr; /* Stack columns */
-            }
-            .sidebar {
-                position: static; /* Remove sticky positioning on mobile */
-            }
-            .main-header h1 {
-                font-size: 1.75rem;
-            }
-            .menu-grid {
-                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-                gap: 20px;
-            }
+            .main-content { grid-template-columns: 1fr; }
+            .sidebar { position: static; }
+            .main-header h1 { font-size: 1.75rem; }
+            .menu-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
         }
         @media (max-width: 768px) {
             .main-header { flex-direction: column; gap: 10px; }
-            .menu-grid {
-                grid-template-columns: 1fr; /* Single column for very small screens */
-            }
+            .menu-grid { grid-template-columns: 1fr; }
         }
 
-        /* --- NEW: PRINT-ONLY STYLES FOR RECEIPT --- */
+        /* --- PRINT-ONLY STYLES FOR RECEIPT --- */
         @media print {
-            body * {
-                visibility: hidden; /* Hide everything by default */
-            }
-            .modal-overlay {
-                background-color: transparent;
-                backdrop-filter: none;
-            }
-            .receipt-content, .receipt-content * {
-                visibility: visible; /* Show only the receipt and its children */
-            }
-            .receipt-content {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-                max-width: 100%;
-                box-shadow: none;
-                padding: 0;
-                margin: 0;
-                border: none;
-                color: #000;
-            }
-            .receipt-actions {
-                display: none !important; /* Force hide the action buttons */
-            }
+            body * { visibility: hidden; }
+            .modal-overlay { background-color: transparent; backdrop-filter: none; }
+            .receipt-content, .receipt-content * { visibility: visible; }
+            .receipt-content { position: absolute; left: 0; top: 0; width: 100%; max-width: 100%; box-shadow: none; padding: 0; margin: 0; border: none; color: #000; }
+            .receipt-actions { display: none !important; }
         }
     </style>
 </head>
 <body>
 
     <header class="main-header">
-        <h1>អាហារដ្ឋានស៊ីជម្ពូរ</h1>
+        <h1>អាហារដ្ឋានដើមជម្ពូរ</h1>
         <div id="current-time" style="font-family: var(--font-mono); font-size: 1rem;"></div>
     </header>
 
@@ -180,7 +155,6 @@
                 </div>
                 <!-- Cart Panel -->
                 <div id="panel-cart" class="sidebar-panel active">
-                    <!-- NEW: Language Switcher -->
                     <div class="form-group">
                         <label>Display Language</label>
                         <div class="lang-switcher" id="cart-lang-switcher">
@@ -190,9 +164,7 @@
                         </div>
                     </div>
                     
-                    <ul id="cart-items">
-                        <li class="cart-empty-message">Please select items</li>
-                    </ul>
+                    <ul id="cart-items"><li class="cart-empty-message">Please select items</li></ul>
 
                     <div class="form-group">
                         <label for="table-number-input">Table Number</label>
@@ -232,9 +204,7 @@
     
     <!-- Receipt Modal -->
     <div class="modal-overlay" id="receipt-modal">
-        <div class="receipt-content" id="receipt-content">
-            <!-- Receipt content will be generated by JavaScript -->
-        </div>
+        <div class="receipt-content" id="receipt-content"></div>
     </div>
 
 
@@ -244,14 +214,12 @@
             const KHR_RATE = 4100;
             let cart = [];
             let orderHistory = [];
-            // NEW: State for current cart language and translatable messages
             let currentCartLanguage = 'en';
             const emptyCartMessages = {
                 en: 'Please select items',
                 kh: 'សូមជ្រើសរើសមុខទំនិញ',
                 zh: '请选择商品'
             };
-
 
             const menuData = [
                 { id: 1, name: { kh: 'ប៊ឺហ្គឺសាច់គោ', en: 'Beef Burger', zh: '牛肉汉堡', py: 'niúròu hànbǎo' }, price: 5.50, category: 'Food' },
@@ -296,7 +264,6 @@
                     </div>
                 `).join('');
                 updateAllMenuItemControls();
-                // Click the first category by default
                 if (dom.menuNav.querySelector('.category-btn')) {
                     dom.menuNav.querySelector('.category-btn').click();
                 }
@@ -310,10 +277,9 @@
                 });
             }
             
-            // MODIFIED: updateCartDisplay now uses currentCartLanguage
             function updateCartDisplay() {
                 dom.cartItemsList.innerHTML = cart.length 
-                    ? cart.map(item => `<li class="cart-item"><span>${item.name[currentCartLanguage]} (x${item.quantity})</span><span>$${(item.price * item.quantity).toFixed(2)}</span></li>`).join('') 
+                    ? cart.map(item => `<li class="cart-item"><span class="cart-item-name">${item.name[currentCartLanguage]} (x${item.quantity})</span><span>$${(item.price * item.quantity).toFixed(2)}</span></li>`).join('') 
                     : `<li class="cart-empty-message">${emptyCartMessages[currentCartLanguage]}</li>`;
                 updateCartTotals(); 
                 updateAllMenuItemControls(); 
@@ -362,24 +328,25 @@
                 updateCartDisplay();
             }
 
+            // MODIFIED: Receipt now defaults to Khmer language
             function generateReceipt(order) {
-                const date = new Date(order.timestamp);
+                 const date = new Date(order.timestamp);
                 dom.receiptContent.innerHTML = `
-                    <div class="receipt-header"><h2>អាហារដ្ឋានស៊ីជម្ពូរ</h2><p>Thank You!</p></div>
+                    <div class="receipt-header"><h2>អាហារដ្ឋានដើមជម្ពូរ</h2><p>សូមអរគុណ!</p></div>
                     <div class="receipt-info">
-                        <div><span>Order:</span> <span>${order.orderId}</span></div>
-                        <div><span>Table:</span> <span>${order.tableNumber}</span></div>
-                        <div><span>Date:</span> <span>${date.toLocaleString('en-GB')}</span></div>
+                        <div><span>លេខបញ្ជាទិញ:</span> <span>${order.orderId}</span></div>
+                        <div><span>តុលេខ:</span> <span>${order.tableNumber}</span></div>
+                        <div><span>កាលបរិច្ឆេទ:</span> <span>${date.toLocaleString('en-GB')}</span></div>
                     </div>
                     <table class="receipt-table">
-                        <thead><tr><th>Item</th><th class="col-qty">Qty</th><th class="col-price">Price</th></tr></thead>
-                        <tbody>${order.items.map(i => `<tr><td>${i.name.en}</td><td class="col-qty">${i.quantity}</td><td class="col-price">$${(i.price * i.quantity).toFixed(2)}</td></tr>`).join('')}</tbody>
+                        <thead><tr><th>មុខទំនិញ</th><th class="col-qty">ចំនួន</th><th class="col-price">តម្លៃ</th></tr></thead>
+                        <tbody>${order.items.map(i => `<tr><td>${i.name.kh}</td><td class="col-qty">${i.quantity}</td><td class="col-price">$${(i.price * i.quantity).toFixed(2)}</td></tr>`).join('')}</tbody>
                     </table>
                     <div class="receipt-totals">
-                        <div class="total-row"><span>TOTAL</span><span>$${order.totalUSD.toFixed(2)}</span></div>
+                        <div class="total-row"><span>សរុប</span><span>$${order.totalUSD.toFixed(2)}</span></div>
                         <div class="total-row-khr"><span></span><span>៛${formatKHR(order.totalUSD)}</span></div>
                     </div>
-                    <div class="receipt-footer"><p>Follow us @SeeChompooCafe</p></div>
+                    <div class="receipt-footer"><p>អាហារដ្ឋានដើមជម្ពូរ</p></div>
                     <div class="receipt-actions" style="margin-top:25px; display:flex; gap:12px;">
                         <button id="print-receipt-btn" class="action-btn" style="background-color:var(--success-color); color:white;">Print</button>
                         <button id="close-receipt-btn" class="action-btn" style="background-color:#6c757d; color:white;">Close</button>
@@ -458,15 +425,14 @@
                     handleMenuInteraction(parseInt(controls.dataset.id), e.target.dataset.action);
                 }
             });
-
-            // NEW: Event listener for the language switcher
+            
             dom.cartLangSwitcher.addEventListener('click', e => {
                 if (e.target.matches('.lang-btn')) {
                     const lang = e.target.dataset.lang;
                     currentCartLanguage = lang;
                     dom.cartLangSwitcher.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
                     e.target.classList.add('active');
-                    updateCartDisplay(); // Re-render cart with new language
+                    updateCartDisplay();
                 }
             });
             
