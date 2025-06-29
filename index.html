@@ -59,9 +59,10 @@
         .sidebar-panel.active { display: block; animation: fadeIn 0.4s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
-        #cart-items { list-style-type: none; padding: 0; margin: 0; max-height: 400px; overflow-y: auto; }
-        .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; }
+        #cart-items { list-style-type: none; padding: 0; margin: 0; max-height: 350px; overflow-y: auto; }
+        .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; font-size: 1.1rem; }
         .cart-item:not(:last-child) { border-bottom: 1px solid var(--border-color); }
+        .cart-empty-message { color: var(--text-secondary); text-align: center; padding: 40px 0; font-style: italic; }
         .form-group { margin-top: 20px; }
         .form-group label { font-weight: 600; display: block; margin-bottom: 8px; }
         .form-group input { width: 100%; padding: 12px; font-size: 1rem; border: 1px solid var(--border-color); border-radius: 8px; }
@@ -69,6 +70,11 @@
         .summary-row { display: flex; justify-content: space-between; align-items: center; }
         .action-btn { width: 100%; padding: 15px; border: none; border-radius: 8px; font-size: 1rem; cursor: pointer; font-weight: 600; }
         .action-btn:disabled { opacity: 0.6; cursor: not-allowed; background-color: #ced4da !important; color: var(--text-secondary) !important; }
+
+        /* --- NEW: CART LANGUAGE SWITCHER --- */
+        .lang-switcher { display: flex; gap: 8px; margin-top: -10px; margin-bottom: 15px; }
+        .lang-btn { flex: 1; padding: 8px; border: 1px solid var(--border-color); background: #f8f9fa; cursor: pointer; border-radius: 6px; font-weight: 600; transition: all 0.2s; }
+        .lang-btn.active { background-color: var(--primary-light); color: var(--primary-color); border-color: var(--primary-color); }
 
         /* --- HISTORY PANEL --- */
         .history-table-container { max-height: 450px; overflow-y: auto; }
@@ -97,6 +103,58 @@
         .receipt-totals .total-row { display: flex; justify-content: space-between; font-weight: bold; font-size: 1.2rem; }
         .receipt-totals .total-row-khr { display: flex; justify-content: space-between; }
         .receipt-footer { text-align: center; margin-top: 20px; font-size: 0.85rem; }
+
+        /* --- NEW: MOBILE RESPONSIVE STYLES --- */
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr; /* Stack columns */
+            }
+            .sidebar {
+                position: static; /* Remove sticky positioning on mobile */
+            }
+            .main-header h1 {
+                font-size: 1.75rem;
+            }
+            .menu-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                gap: 20px;
+            }
+        }
+        @media (max-width: 768px) {
+            .main-header { flex-direction: column; gap: 10px; }
+            .menu-grid {
+                grid-template-columns: 1fr; /* Single column for very small screens */
+            }
+        }
+
+        /* --- NEW: PRINT-ONLY STYLES FOR RECEIPT --- */
+        @media print {
+            body * {
+                visibility: hidden; /* Hide everything by default */
+            }
+            .modal-overlay {
+                background-color: transparent;
+                backdrop-filter: none;
+            }
+            .receipt-content, .receipt-content * {
+                visibility: visible; /* Show only the receipt and its children */
+            }
+            .receipt-content {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                max-width: 100%;
+                box-shadow: none;
+                padding: 0;
+                margin: 0;
+                border: none;
+                color: #000;
+            }
+            .receipt-actions {
+                display: none !important; /* Force hide the action buttons */
+            }
+        }
     </style>
 </head>
 <body>
@@ -122,11 +180,25 @@
                 </div>
                 <!-- Cart Panel -->
                 <div id="panel-cart" class="sidebar-panel active">
-                    <ul id="cart-items"><li class="cart-empty-message">សូមជ្រើសរើសមុខទំនិញ</li></ul>
+                    <!-- NEW: Language Switcher -->
+                    <div class="form-group">
+                        <label>Display Language</label>
+                        <div class="lang-switcher" id="cart-lang-switcher">
+                            <button class="lang-btn active" data-lang="en">EN</button>
+                            <button class="lang-btn" data-lang="kh">KH</button>
+                            <button class="lang-btn" data-lang="zh">CH</button>
+                        </div>
+                    </div>
+                    
+                    <ul id="cart-items">
+                        <li class="cart-empty-message">Please select items</li>
+                    </ul>
+
                     <div class="form-group">
                         <label for="table-number-input">Table Number</label>
                         <input type="number" id="table-number-input" placeholder="e.g., 5" min="1">
                     </div>
+
                     <div class="cart-summary">
                         <div class="summary-row">
                             <span style="font-weight: 600; font-size: 1.1rem;">Total</span>
@@ -160,7 +232,9 @@
     
     <!-- Receipt Modal -->
     <div class="modal-overlay" id="receipt-modal">
-        <div class="receipt-content" id="receipt-content"></div>
+        <div class="receipt-content" id="receipt-content">
+            <!-- Receipt content will be generated by JavaScript -->
+        </div>
     </div>
 
 
@@ -170,6 +244,14 @@
             const KHR_RATE = 4100;
             let cart = [];
             let orderHistory = [];
+            // NEW: State for current cart language and translatable messages
+            let currentCartLanguage = 'en';
+            const emptyCartMessages = {
+                en: 'Please select items',
+                kh: 'សូមជ្រើសរើសមុខទំនិញ',
+                zh: '请选择商品'
+            };
+
 
             const menuData = [
                 { id: 1, name: { kh: 'ប៊ឺហ្គឺសាច់គោ', en: 'Beef Burger', zh: '牛肉汉堡', py: 'niúròu hànbǎo' }, price: 5.50, category: 'Food' },
@@ -187,12 +269,14 @@
                 historyList: document.getElementById('history-list'), grandTotalEl: document.getElementById('grand-total-amount'),
                 receiptModal: document.getElementById('receipt-modal'),
                 receiptContent: document.getElementById('receipt-content'),
+                cartLangSwitcher: document.getElementById('cart-lang-switcher'),
             };
 
             function formatKHR(usd) { return (usd * KHR_RATE).toLocaleString('en-US',{maximumFractionDigits:0}); }
 
             function renderMenu() {
-                dom.menuNav.innerHTML = ['Food', 'Drinks', 'Snack', 'Promotion'].map(c => `<button class="category-btn" data-category="${c}">${c}</button>`).join('');
+                const categories = [...new Set(menuData.map(item => item.category))];
+                dom.menuNav.innerHTML = categories.map(c => `<button class="category-btn" data-category="${c}">${c}</button>`).join('');
                 dom.menuGrid.innerHTML = menuData.map(item => `
                     <div class="menu-item" data-id="${item.id}" data-category="${item.category}">
                         <div class="menu-item-content">
@@ -212,19 +296,28 @@
                     </div>
                 `).join('');
                 updateAllMenuItemControls();
-                document.querySelector('.category-btn[data-category="Food"]').click();
+                // Click the first category by default
+                if (dom.menuNav.querySelector('.category-btn')) {
+                    dom.menuNav.querySelector('.category-btn').click();
+                }
             }
 
             function updateAllMenuItemControls() {
                 document.querySelectorAll('.card-controls').forEach(c => {
-                    const id = parseInt(c.dataset.id); const item = cart.find(i => i.id === id);
+                    const id = parseInt(c.dataset.id); 
+                    const item = cart.find(i => i.id === id);
                     c.innerHTML = item ? `<div class="quantity-adjuster"><button data-action="decrease">-</button><span>${item.quantity}</span><button data-action="increase">+</button></div>` : `<button class="add-btn" data-action="add">Add</button>`;
                 });
             }
             
+            // MODIFIED: updateCartDisplay now uses currentCartLanguage
             function updateCartDisplay() {
-                 dom.cartItemsList.innerHTML = cart.length ? cart.map(item => `<li class="cart-item"><span>${item.name.en} (x${item.quantity})</span><span>$${(item.price * item.quantity).toFixed(2)}</span></li>`).join('') : `<li class="cart-empty-message">សូមជ្រើសរើសមុខទំនិញ</li>`;
-                updateCartTotals(); updateAllMenuItemControls(); saveState();
+                dom.cartItemsList.innerHTML = cart.length 
+                    ? cart.map(item => `<li class="cart-item"><span>${item.name[currentCartLanguage]} (x${item.quantity})</span><span>$${(item.price * item.quantity).toFixed(2)}</span></li>`).join('') 
+                    : `<li class="cart-empty-message">${emptyCartMessages[currentCartLanguage]}</li>`;
+                updateCartTotals(); 
+                updateAllMenuItemControls(); 
+                saveState();
             }
 
             function updateCartTotals() {
@@ -236,8 +329,9 @@
 
             function handleMenuInteraction(id, action) {
                 const itemInCart = cart.find(item => item.id === id);
-                if (action === 'add' && !itemInCart) cart.push({ ...menuData.find(item => item.id === id), quantity: 1 });
-                else if (itemInCart) {
+                if (action === 'add' && !itemInCart) {
+                    cart.push({ ...menuData.find(item => item.id === id), quantity: 1 });
+                } else if (itemInCart) {
                     if (action === 'increase') itemInCart.quantity++;
                     if (action === 'decrease') {
                         itemInCart.quantity--;
@@ -263,12 +357,13 @@
             }
             
             function resetCart() {
-                cart = []; dom.tableInput.value = ''; 
+                cart = []; 
+                dom.tableInput.value = ''; 
                 updateCartDisplay();
             }
 
             function generateReceipt(order) {
-                 const date = new Date(order.timestamp);
+                const date = new Date(order.timestamp);
                 dom.receiptContent.innerHTML = `
                     <div class="receipt-header"><h2>អាហារដ្ឋានស៊ីជម្ពូរ</h2><p>Thank You!</p></div>
                     <div class="receipt-info">
@@ -310,20 +405,22 @@
                 const order = orderHistory.find(o => o.orderId === orderId);
                 if (order && confirm(`Are you sure you want to void Order ID: ${orderId}? This cannot be undone.`)) {
                     order.status = 'Voided';
-                    renderOrderHistory(); saveState();
+                    renderOrderHistory(); 
+                    saveState();
                 }
             }
             
             function downloadItemizedReportCSV() {
                 if (orderHistory.length === 0) return alert("No history to download.");
-                let csvContent = "OrderID,Date,Time,Table,Status,ItemName_EN,Quantity,UnitPrice_USD,LineTotal_USD\n";
+                let csvContent = "OrderID,Date,Time,Table,Status,ItemName_EN,ItemName_KH,ItemName_ZH,Quantity,UnitPrice_USD,LineTotal_USD\n";
                 orderHistory.forEach(order => {
                     const date = new Date(order.timestamp);
                     order.items.forEach(item => {
                         const row = [
                             order.orderId, date.toLocaleDateString('en-CA'), date.toLocaleTimeString('en-GB'),
-                            order.tableNumber, order.status, `"${item.name.en}"`, item.quantity,
-                            item.price.toFixed(2), (item.price * item.quantity).toFixed(2)
+                            order.tableNumber, order.status, 
+                            `"${item.name.en}"`, `"${item.name.kh}"`, `"${item.name.zh}"`,
+                            item.quantity, item.price.toFixed(2), (item.price * item.quantity).toFixed(2)
                         ].join(',');
                         csvContent += row + "\n";
                     });
@@ -354,9 +451,25 @@
                     document.querySelectorAll('.menu-item').forEach(i => i.classList.toggle('hidden', i.dataset.category !== cat));
                 }
             });
+
             dom.menuGrid.addEventListener('click', e => {
-                if (e.target.matches('button')) handleMenuInteraction(parseInt(e.target.closest('.card-controls').dataset.id), e.target.dataset.action);
+                const controls = e.target.closest('.card-controls');
+                if (controls && e.target.matches('button')) {
+                    handleMenuInteraction(parseInt(controls.dataset.id), e.target.dataset.action);
+                }
             });
+
+            // NEW: Event listener for the language switcher
+            dom.cartLangSwitcher.addEventListener('click', e => {
+                if (e.target.matches('.lang-btn')) {
+                    const lang = e.target.dataset.lang;
+                    currentCartLanguage = lang;
+                    dom.cartLangSwitcher.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+                    e.target.classList.add('active');
+                    updateCartDisplay(); // Re-render cart with new language
+                }
+            });
+            
             dom.tableInput.addEventListener('input', updateCartTotals);
             dom.historyList.addEventListener('click', e => {
                 if (e.target.matches('.void-btn')) voidOrder(e.target.closest('tr').dataset.orderId);
@@ -369,19 +482,30 @@
                 const today = new Date().toISOString().split('T')[0];
                 const lastDate = localStorage.getItem('pos_lastDate_v2');
                 let num = 1;
-                if (today === lastDate) num = parseInt(localStorage.getItem('pos_lastNum_v2') || '0') + 1;
-                localStorage.setItem('pos_lastDate_v2', today); localStorage.setItem('pos_lastNum_v2', num);
+                if (today === lastDate) {
+                    num = parseInt(localStorage.getItem('pos_lastNum_v2') || '0') + 1;
+                }
+                localStorage.setItem('pos_lastDate_v2', today); 
+                localStorage.setItem('pos_lastNum_v2', num);
                 return `${today.substring(8,10)}${today.substring(5,7)}-${String(num).padStart(3,'0')}`;
             }
-            function saveState() { localStorage.setItem('pos_orderHistory_v2', JSON.stringify(orderHistory)); }
-            function loadState() { orderHistory = JSON.parse(localStorage.getItem('pos_orderHistory_v2') || '[]'); }
+
+            function saveState() { 
+                localStorage.setItem('pos_orderHistory_v2', JSON.stringify(orderHistory)); 
+            }
+
+            function loadState() { 
+                orderHistory = JSON.parse(localStorage.getItem('pos_orderHistory_v2') || '[]'); 
+            }
 
             // --- INITIALIZATION ---
             loadState();
             renderMenu();
             updateCartDisplay();
             renderOrderHistory(); 
-            setInterval(() => { document.getElementById('current-time').textContent = new Date().toLocaleTimeString('en-GB'); }, 1000);
+            setInterval(() => { 
+                document.getElementById('current-time').textContent = new Date().toLocaleTimeString('en-GB'); 
+            }, 1000);
         });
     </script>
 </body>
