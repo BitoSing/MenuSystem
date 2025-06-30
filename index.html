@@ -1,478 +1,1527 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>អាហារដ្ឋានដើមជម្ពូរ | Business POS</title>
-    
+
     <style>
-        /* --- PROFESSIONAL DESIGN SYSTEM v6.1 (Simplified) --- */
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Noto+Sans+Khmer:wght@400;500;700&family=Roboto+Mono:wght@400;700&display=swap');
-        :root {
-            --primary-color: #0D5EA6;      /* Deep Blue */
-            --accent-color: #EAA64D;       /* Bright Gold */
-            --secondary-accent-color: #C78A3B; /* Muted Bronze */
-            --text-primary: #A16D28;        /* Dark Brown */
-            
-            --bg-color: #f8f9fa; --surface-color: #ffffff; --primary-light: #e7f0f9;
-            --text-secondary: #6c757d; --border-color: #e2e8f0; --success-color: #198754;
-            --danger-color: #dc3545; --shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
-            --border-radius: 12px; --font-main: 'Poppins', 'Noto Sans Khmer', sans-serif;
-            --font-mono: 'Roboto Mono', monospace;
+      /* --- PROFESSIONAL DESIGN SYSTEM v7.3 (Streamlined History Actions) --- */
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Noto+Sans+Khmer:wght@400;500;700&family=Roboto+Mono:wght@400;700&display=swap");
+      :root {
+        --primary-color: #0d5ea6; /* Deep Blue */
+        --accent-color: #eaa64d; /* Bright Gold */
+        --secondary-accent-color: #c78a3b; /* Muted Bronze */
+        --text-primary: #333; /* Darker text for better contrast */
+
+        --bg-color: #f8f9fa;
+        --surface-color: #ffffff;
+        --primary-light: #e7f0f9;
+        --text-secondary: #6c757d;
+        --border-color: #e2e8f0;
+        --success-color: #198754;
+        --danger-color: #dc3545;
+        --shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
+        --border-radius: 12px;
+        --font-main: "Poppins", "Noto Sans Khmer", sans-serif;
+        --font-mono: "Roboto Mono", monospace;
+      }
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        font-family: var(--font-main);
+        margin: 0;
+        background-color: var(--bg-color);
+        color: var(--text-primary);
+      }
+
+      /* --- LAYOUT & HEADER --- */
+      .container {
+        max-width: 1700px;
+        margin: 0 auto;
+        padding: 25px;
+      }
+      .main-header {
+        padding: 20px 25px;
+        background-color: var(--surface-color);
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .main-header h1 {
+        font-family: "Noto Sans Khmer", serif;
+        font-size: 2.25rem;
+        margin: 0;
+        font-weight: 700;
+        color: var(--primary-color);
+      }
+      .main-content {
+        display: grid;
+        grid-template-columns: 1fr 450px;
+        gap: 30px;
+        align-items: flex-start;
+      }
+
+      /* --- MENU SECTION --- */
+      .menu-nav {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 25px;
+        flex-wrap: wrap;
+      }
+      .category-btn {
+        padding: 10px 25px;
+        border: 1px solid var(--border-color);
+        background-color: var(--surface-color);
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        color: var(--primary-color);
+      }
+      .category-btn.active {
+        background-color: var(--primary-color);
+        color: white;
+        border-color: var(--primary-color);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+      .menu-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 30px;
+      }
+      .menu-item {
+        background-color: var(--surface-color);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        display: flex;
+        flex-direction: column;
+      }
+      .menu-item.hidden {
+        display: none;
+      }
+      .menu-item-content {
+        padding: 20px;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+      }
+      .menu-item-names {
+        margin-bottom: 15px;
+        flex-grow: 1;
+      }
+      .lang-kh {
+        font-size: 1.4rem;
+        font-weight: 700;
+      }
+      .lang-en {
+        font-size: 1.1rem;
+        font-weight: 500;
+      }
+      .lang-zh {
+        font-size: 1.1rem;
+      }
+      .lang-py {
+        font-size: 0.9rem;
+        font-style: italic;
+        color: #b0b0b0;
+      }
+      .menu-item-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .price-display .price-usd {
+        font-weight: 700;
+        font-size: 1.4rem;
+        color: var(--primary-color);
+      }
+      .price-display .price-khr {
+        font-size: 0.9rem;
+      }
+      .card-controls .add-btn {
+        background-color: var(--primary-light);
+        color: var(--primary-color);
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .card-controls .quantity-adjuster {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+      .card-controls .quantity-adjuster button {
+        background-color: #f1f5f9;
+        border: 1px solid var(--border-color);
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        font-size: 1.4rem;
+        cursor: pointer;
+      }
+
+      /* --- SIDEBAR & CART --- */
+      .sidebar {
+        position: sticky;
+        top: 25px;
+        background-color: var(--surface-color);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+      .sidebar-tabs {
+        display: flex;
+      }
+      .tab-btn {
+        flex: 1;
+        padding: 18px;
+        border: none;
+        background-color: #f8f9fa;
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--text-secondary);
+        transition: all 0.2s;
+        border-bottom: 3px solid transparent;
+      }
+      .tab-btn.active {
+        color: var(--primary-color);
+        background-color: var(--surface-color);
+        border-bottom-color: var(--primary-color);
+      }
+      .sidebar-panel {
+        display: none;
+        flex-direction: column;
+        max-height: calc(100vh - 150px);
+      }
+      .sidebar-panel.active {
+        display: flex;
+        animation: fadeIn 0.4s ease;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
         }
-        *, *::before, *::after { box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
-        body { font-family: var(--font-main); margin: 0; background-color: var(--bg-color); color: var(--text-primary); }
-
-        /* --- LAYOUT & HEADER --- */
-        .container { max-width: 1700px; margin: 0 auto; padding: 25px; }
-        .main-header { padding: 20px 25px; background-color: var(--surface-color); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
-        .main-header h1 { font-family: 'Noto Sans Khmer', serif; font-size: 2.25rem; margin: 0; font-weight: 700; color: var(--primary-color); }
-        .main-content { display: grid; grid-template-columns: 1fr 450px; gap: 30px; margin-top: 25px; align-items: flex-start; }
-
-        /* --- MENU SECTION --- */
-        .menu-nav { display: flex; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; }
-        .category-btn { padding: 10px 25px; border: 1px solid var(--border-color); background-color: var(--surface-color); border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease; color: var(--primary-color); }
-        .category-btn.active { background-color: var(--primary-color); color: white; border-color: var(--primary-color); transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; }
-        .menu-item { background-color: var(--surface-color); border-radius: var(--border-radius); box-shadow: var(--shadow); display: flex; flex-direction: column; }
-        .menu-item.hidden { display: none; }
-        .menu-item-content { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; }
-        .menu-item-names { margin-bottom: 15px; flex-grow: 1; }
-        .lang-kh { font-size: 1.4rem; font-weight: 700; }
-        .lang-en { font-size: 1.1rem; font-weight: 500; }
-        .lang-zh { font-size: 1.1rem; }
-        .lang-py { font-size: 0.9rem; font-style: italic; color: #b0b0b0; }
-        .menu-item-footer { display: flex; justify-content: space-between; align-items: center; }
-        .price-display .price-usd { font-weight: 700; font-size: 1.4rem; color: var(--primary-color); }
-        .price-display .price-khr { font-size: 0.9rem; }
-        .card-controls .add-btn { background-color: var(--primary-light); color: var(--primary-color); border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; }
-        .card-controls .quantity-adjuster { display: flex; align-items: center; gap: 15px; }
-        .card-controls .quantity-adjuster button { background-color: #f1f5f9; border: 1px solid var(--border-color); width: 36px; height: 36px; border-radius: 50%; font-size: 1.4rem; cursor: pointer; }
-
-        /* --- SIDEBAR & CART --- */
-        .sidebar { position: sticky; top: 25px; background-color: var(--surface-color); border-radius: var(--border-radius); box-shadow: var(--shadow); overflow: hidden; }
-        .sidebar-tabs { display: flex; }
-        .tab-btn { flex: 1; padding: 18px; border: none; background-color: #f8f9fa; cursor: pointer; font-size: 1rem; font-weight: 600; color: var(--text-secondary); transition: all 0.2s; border-bottom: 3px solid transparent; }
-        .tab-btn.active { color: var(--primary-color); background-color: var(--surface-color); border-bottom-color: var(--primary-color); }
-        .sidebar-panel { display: none; padding: 25px; }
-        .sidebar-panel.active { display: block; animation: fadeIn 0.4s ease; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        
-        #cart-items { list-style-type: none; padding: 0; margin: 0; max-height: 350px; overflow-y: auto; }
-        .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; }
-        /* Adjusted cart item name span to prevent long Khmer words from breaking layout */
-        .cart-item-name { flex-grow: 1; margin-right: 10px; word-break: break-word; }
-        .cart-item:not(:last-child) { border-bottom: 1px solid var(--border-color); }
-        .cart-empty-message { color: var(--text-secondary); text-align: center; padding: 40px 0; font-style: italic; }
-        .form-group { margin-top: 20px; }
-        .form-group label { font-weight: 600; display: block; margin-bottom: 8px; }
-        .form-group input { width: 100%; padding: 12px; font-size: 1rem; border: 1px solid var(--border-color); border-radius: 8px; }
-        .cart-summary { border-top: 1px solid var(--border-color); margin-top: 20px; padding-top: 20px; }
-        .summary-row { display: flex; justify-content: space-between; align-items: center; }
-        .action-btn { width: 100%; padding: 15px; border: none; border-radius: 8px; font-size: 1rem; cursor: pointer; font-weight: 600; }
-        .action-btn:disabled { opacity: 0.6; cursor: not-allowed; background-color: #ced4da !important; color: var(--text-secondary) !important; }
-
-        /* --- CART LANGUAGE SWITCHER --- */
-        .lang-switcher { display: flex; gap: 8px; margin-top: -10px; margin-bottom: 15px; }
-        .lang-btn { flex: 1; padding: 8px; border: 1px solid var(--border-color); background: #f8f9fa; cursor: pointer; border-radius: 6px; font-weight: 600; transition: all 0.2s; }
-        .lang-btn.active { background-color: var(--primary-light); color: var(--primary-color); border-color: var(--primary-color); }
-
-        /* --- HISTORY PANEL --- */
-        .history-table-container { max-height: 450px; overflow-y: auto; }
-        .history-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-        .history-table th, .history-table td { padding: 10px; text-align: left; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
-        .history-table td:last-child { text-align: center; }
-        .voided-order { text-decoration: line-through; color: #aaa; background-color: #fafafa; }
-        .void-btn { background: var(--danger-color); color: white; border: none; padding: 4px 8px; font-size: 0.75rem; border-radius: 4px; cursor: pointer; }
-        .void-btn:disabled { background-color: #aaa; cursor: not-allowed; }
-        .grand-total { margin-top: 20px; padding: 20px; background-color: var(--primary-light); border-radius: 8px; display: flex; justify-content: space-between; align-items: center; }
-        #grand-total-amount { font-weight: 700; font-size: 1.5rem; color: var(--primary-color); }
-
-        /* --- RECEIPT MODAL --- */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(30, 41, 59, 0.6); backdrop-filter: blur(5px); display: none; justify-content: center; align-items: center; z-index: 1000; }
-        .receipt-content { background: #fff; width: 90%; max-width: 380px; padding: 20px; color: #000; }
-        /* Use main font for receipt for better Khmer display, mono for numbers */
-        .receipt-header { text-align: center; margin-bottom: 15px; font-family: var(--font-main); }
-        .receipt-header h2 { font-size: 2rem; color: #000; margin: 0; }
-        .receipt-info { border-top: 1px dashed #000; border-bottom: 1px dashed #000; padding: 8px 0; margin-bottom: 10px; font-size: 0.9rem; font-family: var(--font-main);}
-        .receipt-info div { display: flex; justify-content: space-between; padding: 2px 0;}
-        .receipt-table { width: 100%; font-size: 0.9rem; border-collapse: collapse; font-family: var(--font-main); }
-        .receipt-table th { text-align: left; padding: 5px 0; border-bottom: 1px solid #000; font-weight: bold; }
-        .receipt-table td { padding: 5px 0; vertical-align: top;}
-        .receipt-table .col-qty, .receipt-table .col-price { font-family: var(--font-mono); }
-        .receipt-table .col-qty { text-align: center; }
-        .receipt-table .col-price { text-align: right; }
-        .receipt-totals { border-top: 1px dashed #000; margin-top: 10px; padding-top: 10px; font-family: var(--font-main); }
-        .receipt-totals .total-row { display: flex; justify-content: space-between; font-weight: bold; font-size: 1.2rem; }
-        .receipt-totals .total-row span:last-child { font-family: var(--font-mono); }
-        .receipt-totals .total-row-khr { display: flex; justify-content: space-between; }
-        .receipt-totals .total-row-khr span:last-child { font-family: var(--font-mono); }
-        .receipt-footer { text-align: center; margin-top: 20px; font-size: 0.85rem; font-family: var(--font-main); }
-
-        /* --- MOBILE RESPONSIVE STYLES --- */
-        @media (max-width: 1024px) {
-            .main-content { grid-template-columns: 1fr; }
-            .sidebar { position: static; }
-            .main-header h1 { font-size: 1.75rem; }
-            .menu-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        to {
+          opacity: 1;
         }
-        @media (max-width: 768px) {
-            .main-header { flex-direction: column; gap: 10px; }
-            .menu-grid { grid-template-columns: 1fr; }
-        }
+      }
 
-        /* --- PRINT-ONLY STYLES FOR RECEIPT --- */
-        @media print {
-            body * { visibility: hidden; }
-            .modal-overlay { background-color: transparent; backdrop-filter: none; }
-            .receipt-content, .receipt-content * { visibility: visible; }
-            .receipt-content { position: absolute; left: 0; top: 0; width: 100%; max-width: 100%; box-shadow: none; padding: 0; margin: 0; border: none; color: #000; }
-            .receipt-actions { display: none !important; }
+      /* --- CART Panel --- */
+      #panel-cart {
+        padding: 0;
+      }
+      .cart-header-controls {
+        padding: 20px 25px;
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+      }
+      .table-input-group {
+        flex-basis: 40%;
+      }
+      .lang-switcher-group {
+        flex-basis: 60%;
+      }
+      .cart-header-controls label {
+        font-weight: 600;
+        display: block;
+        margin-bottom: 8px;
+        font-size: 0.9rem;
+      }
+      #table-number-input {
+        width: 100%;
+        padding: 10px;
+        font-size: 1rem;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+      }
+      .cart-items-container {
+        flex-grow: 1;
+        overflow-y: auto;
+        padding: 20px 25px;
+      }
+      #cart-items {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+      .cart-empty-message {
+        color: var(--text-secondary);
+        text-align: center;
+        padding: 40px 0;
+        font-style: italic;
+      }
+      .cart-footer {
+        padding: 20px 25px;
+        border-top: 1px solid var(--border-color);
+        background-color: var(--bg-color);
+      }
+      .cart-summary {
+        margin-bottom: 20px;
+      }
+      .summary-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .summary-row span:first-child {
+        font-weight: 600;
+        font-size: 1.2rem;
+      }
+      #cart-total-usd {
+        font-weight: 700;
+        font-size: 1.8rem;
+        text-align: right;
+        display: block;
+        color: var(--primary-color);
+      }
+      #cart-total-khr {
+        color: var(--text-secondary);
+        text-align: right;
+        display: block;
+      }
+      .action-btn {
+        width: 100%;
+        padding: 15px;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        cursor: pointer;
+        font-weight: 700;
+      }
+      .action-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        background-color: #ced4da !important;
+        color: var(--text-secondary) !important;
+      }
+      .cart-item-card {
+        background: var(--surface-color);
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        padding: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .cart-item-card-main {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+      }
+      .cart-item-card-name {
+        font-weight: 600;
+        word-break: break-word;
+        flex-grow: 1;
+      }
+      .cart-item-card-remove-btn {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: #9ca3af;
+        cursor: pointer;
+        line-height: 1;
+        padding: 0 5px;
+      }
+      .cart-item-card-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .cart-item-card .quantity-adjuster {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .cart-item-card .quantity-adjuster button {
+        width: 30px;
+        height: 30px;
+        font-size: 1.2rem;
+      }
+      .cart-item-card-price {
+        text-align: right;
+        font-weight: 600;
+        font-size: 1.1rem;
+      }
+      .lang-switcher {
+        display: flex;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        overflow: hidden;
+      }
+      .lang-btn {
+        flex: 1;
+        padding: 10px;
+        border: none;
+        background: var(--surface-color);
+        color: var(--primary-color);
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.2s ease;
+        border-right: 1px solid var(--border-color);
+      }
+      .lang-btn:last-child {
+        border-right: none;
+      }
+      .lang-btn.active {
+        background-color: var(--primary-color);
+        color: white;
+      }
+      .lang-btn:not(.active):hover {
+        background-color: var(--primary-light);
+      }
+
+      /* --- RE-DESIGNED: HISTORY PANEL v2 (Kebab Menu) --- */
+      #panel-history {
+        padding: 0;
+      }
+      .history-panel-header {
+        padding: 20px 25px;
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+      .history-date-filters {
+        display: flex;
+        gap: 8px;
+      }
+      .date-filter-btn {
+        flex-grow: 1;
+        padding: 8px;
+        border-radius: 6px;
+        border: 1px solid var(--border-color);
+        background-color: var(--surface-color);
+        color: var(--text-secondary);
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .date-filter-btn.active {
+        background-color: var(--primary-light);
+        color: var(--primary-color);
+        border-color: var(--primary-color);
+      }
+      .history-table-container {
+        flex-grow: 1;
+        overflow-y: auto;
+      }
+      .history-empty-message {
+        display: none;
+        text-align: center;
+        padding: 40px;
+        color: var(--text-secondary);
+        font-style: italic;
+      }
+      .history-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        font-size: 0.9rem;
+      }
+      .history-table th {
+        padding: 12px 15px;
+        text-align: left;
+        background-color: var(--bg-color);
+        border-bottom: 2px solid var(--border-color);
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+      .history-table td {
+        padding: 12px 15px;
+        border-bottom: 1px solid var(--border-color);
+        vertical-align: middle;
+      }
+      .history-table tbody tr {
+        transition: background-color 0.15s ease-in-out;
+      }
+      .history-table tbody tr:hover {
+        background-color: #f1f5f9;
+      }
+      .history-table .cell-status {
+        width: 80px;
+      }
+      .status-pill {
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.8rem;
+        color: white;
+      }
+      .status-pill.status-paid {
+        background-color: var(--success-color);
+      }
+      .status-pill.status-voided {
+        background-color: var(--text-secondary);
+      }
+      .actions-cell {
+        position: relative;
+        text-align: right;
+        width: 50px;
+      }
+      .kebab-btn {
+        background: none;
+        border: none;
+        padding: 5px;
+        cursor: pointer;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .kebab-btn:hover {
+        background-color: #e2e8f0;
+      }
+      .kebab-btn svg {
+        width: 20px;
+        height: 20px;
+        fill: #64748b;
+      }
+      .kebab-menu {
+        position: absolute;
+        right: 25px;
+        top: 45px;
+        background: var(--surface-color);
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        z-index: 20;
+        list-style: none;
+        padding: 8px 0;
+        margin: 0;
+        min-width: 160px;
+        opacity: 0;
+        transform: translateY(-10px);
+        pointer-events: none;
+        transition: opacity 0.2s ease, transform 0.2s ease;
+      }
+      .kebab-menu.visible {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+      }
+      .kebab-menu-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 15px;
+        cursor: pointer;
+        font-size: 0.9rem;
+      }
+      .kebab-menu-item:hover {
+        background-color: var(--bg-color);
+      }
+      .kebab-menu-item svg {
+        width: 16px;
+        height: 16px;
+      }
+      .kebab-menu-item[disabled] {
+        color: #aaa;
+        cursor: not-allowed;
+        background-color: transparent !important;
+      }
+      .kebab-menu-item[disabled] svg {
+        fill: #aaa;
+      }
+      .kebab-menu-item.void-item {
+        color: var(--danger-color);
+      }
+      .kebab-menu-item.void-item svg {
+        fill: var(--danger-color);
+      }
+      .history-panel-footer {
+        padding: 20px 25px;
+        border-top: 1px solid var(--border-color);
+        background-color: var(--bg-color);
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+      .history-panel-footer .footer-summary {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+      }
+      #download-csv-btn {
+        padding: 6px 12px;
+        border: none;
+        background-color: var(--primary-color);
+        color: white;
+        font-size: 0.8rem;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+      .history-panel-footer .grand-total {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .history-panel-footer .grand-total span:first-child {
+        font-weight: 600;
+        font-size: 1.2rem;
+      }
+      #grand-total-amount {
+        font-weight: 700;
+        font-size: 1.5rem;
+        color: var(--primary-color);
+      }
+
+      /* --- RECEIPT MODAL --- */
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(30, 41, 59, 0.6);
+        backdrop-filter: blur(5px);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+      }
+      .receipt-container {
+        background: #fff;
+        width: 90%;
+        max-width: 380px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      }
+      .receipt-content {
+        padding: 25px;
+        color: #000;
+        font-family: var(--font-main);
+      }
+      .receipt-header {
+        text-align: center;
+        margin-bottom: 15px;
+      }
+      .receipt-logo {
+        font-size: 2.2rem;
+        font-family: "Noto Sans Khmer", serif;
+        font-weight: 700;
+        margin-bottom: 5px;
+      }
+      .receipt-header p {
+        margin: 0;
+        font-size: 0.9rem;
+      }
+      .receipt-info {
+        border-top: 1px dashed #000;
+        border-bottom: 1px dashed #000;
+        padding: 8px 0;
+        margin: 15px 0;
+        font-size: 0.9rem;
+      }
+      .receipt-info div {
+        display: flex;
+        justify-content: space-between;
+        padding: 3px 0;
+        font-family: var(--font-mono);
+      }
+      .receipt-info div span:first-child {
+        font-family: var(--font-main);
+      }
+      .receipt-table {
+        width: 100%;
+        font-size: 0.9rem;
+        border-collapse: collapse;
+        margin-bottom: 15px;
+      }
+      .receipt-table th {
+        text-align: left;
+        padding: 8px 0;
+        border-bottom: 1px solid #000;
+        font-weight: bold;
+      }
+      .receipt-table td {
+        padding: 8px 0;
+        vertical-align: top;
+        border-bottom: 1px dotted #ccc;
+      }
+      .receipt-table .col-item .name-kh {
+        font-weight: 700;
+      }
+      .receipt-table .col-item .name-en {
+        font-size: 0.85em;
+        color: #444;
+      }
+      .receipt-table .col-qty,
+      .receipt-table .col-price,
+      .receipt-table .col-total {
+        font-family: var(--font-mono);
+        text-align: right;
+      }
+      .receipt-table .col-qty {
+        padding-right: 10px;
+      }
+      .receipt-totals {
+        border-top: 1px dashed #000;
+        padding-top: 10px;
+        font-size: 1rem;
+      }
+      .receipt-totals .total-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 4px 0;
+      }
+      .receipt-totals .total-row span:last-child {
+        font-family: var(--font-mono);
+      }
+      .receipt-totals .grand-total-row {
+        font-weight: bold;
+        font-size: 1.3rem;
+        margin-top: 5px;
+      }
+      .receipt-totals .grand-total-khr {
+        text-align: right;
+        font-size: 1rem;
+        font-weight: normal;
+      }
+      .receipt-footer {
+        text-align: center;
+        margin-top: 25px;
+        font-size: 0.9rem;
+      }
+      .receipt-actions {
+        padding: 15px 25px;
+        background: #f8f9fa;
+        border-top: 1px solid #e2e8f0;
+        display: flex;
+        gap: 12px;
+      }
+
+      /* --- MOBILE RESPONSIVE STYLES --- */
+      @media (max-width: 1024px) {
+        .main-content {
+          grid-template-columns: 1fr;
         }
+        .sidebar {
+          position: static;
+          max-height: none;
+        }
+        .main-header h1 {
+          font-size: 1.75rem;
+        }
+        .menu-grid {
+          grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+          gap: 20px;
+        }
+      }
+      @media (max-width: 768px) {
+        .main-header {
+          flex-direction: column;
+          gap: 10px;
+        }
+        .menu-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media print {
+        body * {
+          visibility: hidden;
+        }
+        .modal-overlay {
+          background-color: transparent;
+          backdrop-filter: none;
+          display: block;
+        }
+        .receipt-container,
+        .receipt-container * {
+          visibility: visible;
+        }
+        .receipt-container {
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 100%;
+          max-width: 100%;
+          box-shadow: none;
+          margin: 0;
+          border: none;
+          color: #000;
+          background: #fff;
+        }
+        .receipt-actions {
+          display: none !important;
+        }
+      }
     </style>
-</head>
-<body>
-
+  </head>
+  <body>
     <header class="main-header">
-        <h1>អាហារដ្ឋានដើមជម្ពូរ</h1>
-        <div id="current-time" style="font-family: var(--font-mono); font-size: 1rem;"></div>
+      <h1>អាហារដ្ឋានដើមជម្ពូរ</h1>
+      <div
+        id="current-time"
+        style="font-family: var(--font-mono); font-size: 1rem"
+      ></div>
     </header>
 
     <main class="container">
-        <div class="main-content">
-            <!-- Menu Section -->
-            <section class="menu-section">
-                <div class="menu-nav" id="menu-nav"></div>
-                <div class="menu-grid" id="menu-grid"></div>
-            </section>
+      <div class="main-content">
+        <!-- Menu Section -->
+        <section class="menu-section">
+          <div class="menu-nav" id="menu-nav"></div>
+          <div class="menu-grid" id="menu-grid"></div>
+        </section>
 
-            <!-- Sidebar Section -->
-            <aside class="sidebar">
-                <div class="sidebar-tabs">
-                    <button class="tab-btn active" data-tab="cart">Current Order</button>
-                    <button class="tab-btn" data-tab="history">Order History</button>
+        <!-- Sidebar Section -->
+        <aside class="sidebar">
+          <div class="sidebar-tabs">
+            <button class="tab-btn active" data-tab="cart">
+              Current Order
+            </button>
+            <button class="tab-btn" data-tab="history">Order History</button>
+          </div>
+          <!-- Cart Panel -->
+          <div id="panel-cart" class="sidebar-panel active">
+            <div class="cart-header-controls">
+              <div class="table-input-group">
+                <label for="table-number-input">Table</label>
+                <input
+                  type="number"
+                  id="table-number-input"
+                  placeholder="e.g., 5"
+                  min="1"
+                />
+              </div>
+              <div class="lang-switcher-group">
+                <label>Language</label>
+                <div class="lang-switcher" id="cart-lang-switcher">
+                  <button class="lang-btn active" data-lang="en">EN</button>
+                  <button class="lang-btn" data-lang="kh">KH</button>
+                  <button class="lang-btn" data-lang="zh">CH</button>
                 </div>
-                <!-- Cart Panel -->
-                <div id="panel-cart" class="sidebar-panel active">
-                    <div class="form-group">
-                        <label>Display Language</label>
-                        <div class="lang-switcher" id="cart-lang-switcher">
-                            <button class="lang-btn active" data-lang="en">EN</button>
-                            <button class="lang-btn" data-lang="kh">KH</button>
-                            <button class="lang-btn" data-lang="zh">CH</button>
-                        </div>
-                    </div>
-                    
-                    <ul id="cart-items"><li class="cart-empty-message">Please select items</li></ul>
+              </div>
+            </div>
+            <div class="cart-items-container">
+              <ul id="cart-items">
+                <li class="cart-empty-message">Please select items</li>
+              </ul>
+            </div>
+            <div class="cart-footer">
+              <div class="cart-summary">
+                <div class="summary-row">
+                  <span>Total</span>
+                  <div>
+                    <span id="cart-total-usd">$0.00</span>
+                    <span id="cart-total-khr">*៛0</span>
+                  </div>
+                </div>
+              </div>
+              <button
+                id="submit-order-btn"
+                class="action-btn"
+                disabled
+                style="background-color: var(--accent-color); color: white"
+              >
+                Submit Order
+              </button>
+            </div>
+          </div>
 
-                    <div class="form-group">
-                        <label for="table-number-input">Table Number</label>
-                        <input type="number" id="table-number-input" placeholder="e.g., 5" min="1">
-                    </div>
+          <!-- History Panel (REDESIGNED) -->
+          <div id="panel-history" class="sidebar-panel">
+            <div class="history-panel-header">
+              <div class="history-date-filters">
+                <button class="date-filter-btn active" data-period="all">
+                  All
+                </button>
+                <button class="date-filter-btn" data-period="today">
+                  Today
+                </button>
+                <button class="date-filter-btn" data-period="yesterday">
+                  Yesterday
+                </button>
+              </div>
+            </div>
 
-                    <div class="cart-summary">
-                        <div class="summary-row">
-                            <span style="font-weight: 600; font-size: 1.1rem;">Total</span>
-                            <div>
-                               <span id="cart-total-usd" style="font-weight:700; font-size:1.4rem; text-align:right; display:block;">$0.00</span>
-                               <span id="cart-total-khr" style="color:var(--text-secondary); text-align:right; display:block;">*៛0</span>
-                            </div>
-                        </div>
-                    </div>
-                    <button id="submit-order-btn" class="action-btn" disabled style="background-color: var(--accent-color); color: white; margin-top: 20px;">Submit Order</button>
-                </div>
-                <!-- History Panel -->
-                <div id="panel-history" class="sidebar-panel" style="display:none;">
-                     <div style="display:flex; gap:12px; margin-bottom:25px;">
-                         <button id="download-csv-btn" class="action-btn" style="background-color:var(--secondary-accent-color);color:white;">Download Report</button>
-                    </div>
-                    <div class="history-table-container">
-                        <table class="history-table">
-                            <thead><tr><th>Order ID</th><th>Table</th><th>Date</th><th>Total</th><th>Action</th></tr></thead>
-                            <tbody id="history-list"></tbody>
-                        </table>
-                    </div>
-                    <div class="grand-total">
-                        <span>Total Revenue (Paid)</span>
-                        <span id="grand-total-amount">$0.00</span>
-                    </div>
-                </div>
-            </aside>
-        </div>
+            <div class="history-table-container">
+              <table class="history-table">
+                <thead>
+                  <tr>
+                    <th>Order ID</th>
+                    <th>Table</th>
+                    <th>Timestamp</th>
+                    <th>Total</th>
+                    <th class="cell-status">Status</th>
+                    <th style="text-align: right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="history-list"></tbody>
+              </table>
+              <div class="history-empty-message">No matching orders found.</div>
+            </div>
+
+            <div class="history-panel-footer">
+              <div class="footer-summary">
+                <span id="history-summary-text">Showing 0 orders</span>
+                <button id="download-csv-btn">Download View as CSV</button>
+              </div>
+              <div class="grand-total">
+                <span>Displayed Revenue</span>
+                <span id="grand-total-amount">$0.00</span>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
     </main>
-    
+
     <!-- Receipt Modal -->
     <div class="modal-overlay" id="receipt-modal">
-        <div class="receipt-content" id="receipt-content"></div>
+      <div class="receipt-container" id="receipt-container"></div>
     </div>
 
-
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+      document.addEventListener("DOMContentLoaded", () => {
+        const KHR_RATE = 4100;
+        let cart = [];
+        let orderHistory = [];
+        let currentCartLanguage = "en";
+        let historyDateFilter = "all";
 
-            const KHR_RATE = 4100;
-            let cart = [];
-            let orderHistory = [];
-            let currentCartLanguage = 'en';
-            const emptyCartMessages = {
-                en: 'Please select items',
-                kh: 'សូមជ្រើសរើសមុខទំនិញ',
-                zh: '请选择商品'
-            };
+        const menuData = [
+          {
+            id: 1,
+            name: {
+              kh: "ប៊ឺហ្គឺសាច់គោ",
+              en: "Beef Burger",
+              zh: "牛肉汉堡",
+              py: "niúròu hànbǎo",
+            },
+            price: 5.5,
+            category: "Food",
+          },
+          {
+            id: 2,
+            name: {
+              kh: "គុយទាវសាច់គោ",
+              en: "Beef Noodle Soup",
+              zh: "牛肉面",
+              py: "niúròu miàn",
+            },
+            price: 4.0,
+            category: "Food",
+          },
+          {
+            id: 3,
+            name: {
+              kh: "កាហ្វេឡាតេ",
+              en: "Caffè Latte",
+              zh: "拿铁咖啡",
+              py: "nátiě kāfēi",
+            },
+            price: 2.5,
+            category: "Drinks",
+          },
+          {
+            id: 4,
+            name: {
+              kh: "តែគុជទឹកដោះគោ",
+              en: "Bubble Milk Tea",
+              zh: "珍珠奶茶",
+              py: "zhēnzhū nǎichá",
+            },
+            price: 2.75,
+            category: "Drinks",
+          },
+          {
+            id: 5,
+            name: {
+              kh: "ដំឡូងបារាំងបំពង",
+              en: "French Fries",
+              zh: "炸薯条",
+              py: "zhá shǔtiáo",
+            },
+            price: 2.0,
+            category: "Snack",
+          },
+          {
+            id: 6,
+            name: {
+              kh: "ឈុតអាហារថ្ងៃត្រង់",
+              en: "Lunch Set",
+              zh: "午餐套餐",
+              py: "wǔcān tàocān",
+            },
+            price: 6.5,
+            category: "Promotion",
+          },
+        ];
 
-            const menuData = [
-                { id: 1, name: { kh: 'ប៊ឺហ្គឺសាច់គោ', en: 'Beef Burger', zh: '牛肉汉堡', py: 'niúròu hànbǎo' }, price: 5.50, category: 'Food' },
-                { id: 2, name: { kh: 'គុយទាវសាច់គោ', en: 'Beef Noodle Soup', zh: '牛肉面', py: 'niúròu miàn' }, price: 4.00, category: 'Food' },
-                { id: 3, name: { kh: 'កាហ្វេឡាតេ', en: 'Caffè Latte', zh: '拿铁咖啡', py: 'nátiě kāfēi' }, price: 2.50, category: 'Drinks' },
-                { id: 4, name: { kh: 'តែគុជទឹកដោះគោ', en: 'Bubble Milk Tea', zh: '珍珠奶茶', py: 'zhēnzhū nǎichá' }, price: 2.75, category: 'Drinks' },
-                { id: 5, name: { kh: 'ដំឡូងបារាំងបំពង', en: 'French Fries', zh: '炸薯条', py: 'zhá shǔtiáo' }, price: 2.00, category: 'Snack' },
-                { id: 6, name: { kh: 'ឈុតអាហារថ្ងៃត្រង់', en: 'Lunch Set', zh: '午餐套餐', py: 'wǔcān tàocān' }, price: 6.50, category: 'Promotion' },
-            ];
-            
-            const dom = {
-                menuNav: document.getElementById('menu-nav'), menuGrid: document.getElementById('menu-grid'),
-                cartItemsList: document.getElementById('cart-items'),
-                tableInput: document.getElementById('table-number-input'), submitBtn: document.getElementById('submit-order-btn'),
-                historyList: document.getElementById('history-list'), grandTotalEl: document.getElementById('grand-total-amount'),
-                receiptModal: document.getElementById('receipt-modal'),
-                receiptContent: document.getElementById('receipt-content'),
-                cartLangSwitcher: document.getElementById('cart-lang-switcher'),
-            };
+        const dom = {
+          menuNav: document.getElementById("menu-nav"),
+          menuGrid: document.getElementById("menu-grid"),
+          cartItemsList: document.getElementById("cart-items"),
+          tableInput: document.getElementById("table-number-input"),
+          submitBtn: document.getElementById("submit-order-btn"),
+          historyList: document.getElementById("history-list"),
+          grandTotalEl: document.getElementById("grand-total-amount"),
+          receiptModal: document.getElementById("receipt-modal"),
+          receiptContainer: document.getElementById("receipt-container"),
+          cartLangSwitcher: document.getElementById("cart-lang-switcher"),
+          historyDateFilters: document.querySelector(".history-date-filters"),
+          historyEmptyMsg: document.querySelector(".history-empty-message"),
+          historySummaryText: document.getElementById("history-summary-text"),
+          downloadCsvBtn: document.getElementById("download-csv-btn"),
+        };
 
-            function formatKHR(usd) { return (usd * KHR_RATE).toLocaleString('en-US',{maximumFractionDigits:0}); }
+        const icons = {
+          kebab: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" /></svg>`,
+          view: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>`,
+          void: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" /></svg>`,
+        };
 
-            function renderMenu() {
-                const categories = [...new Set(menuData.map(item => item.category))];
-                dom.menuNav.innerHTML = categories.map(c => `<button class="category-btn" data-category="${c}">${c}</button>`).join('');
-                dom.menuGrid.innerHTML = menuData.map(item => `
-                    <div class="menu-item" data-id="${item.id}" data-category="${item.category}">
+        function formatKHR(usd) {
+          return (usd * KHR_RATE).toLocaleString("en-US", {
+            maximumFractionDigits: 0,
+          });
+        }
+
+        function renderMenu() {
+          const categories = [
+            ...new Set(menuData.map((item) => item.category)),
+          ];
+          dom.menuNav.innerHTML = categories
+            .map(
+              (c) =>
+                `<button class="category-btn" data-category="${c}">${c}</button>`
+            )
+            .join("");
+          dom.menuGrid.innerHTML = menuData
+            .map(
+              (item) => `
+                    <div class="menu-item" data-id="${
+                      item.id
+                    }" data-category="${item.category}">
                         <div class="menu-item-content">
                             <div class="menu-item-names">
                                 <div class="lang-kh">${item.name.kh}</div>
                                 <div class="lang-en">${item.name.en}</div>
-                                <div class="lang-zh">${item.name.zh} <span class="lang-py">(${item.name.py})</span></div>
+                                <div class="lang-zh">${
+                                  item.name.zh
+                                } <span class="lang-py">(${
+                item.name.py
+              })</span></div>
                             </div>
                             <div class="menu-item-footer">
                                 <div class="price-display">
-                                    <div class="price-usd">$${item.price.toFixed(2)}</div>
-                                    <div class="price-khr">*៛${formatKHR(item.price)}</div>
+                                    <div class="price-usd">$${item.price.toFixed(
+                                      2
+                                    )}</div>
+                                    <div class="price-khr">*៛${formatKHR(
+                                      item.price
+                                    )}</div>
                                 </div>
-                                <div class="card-controls" data-id="${item.id}"></div>
+                                <div class="card-controls" data-id="${
+                                  item.id
+                                }"></div>
                             </div>
                         </div>
                     </div>
-                `).join('');
-                updateAllMenuItemControls();
-                if (dom.menuNav.querySelector('.category-btn')) {
-                    dom.menuNav.querySelector('.category-btn').click();
-                }
-            }
+                `
+            )
+            .join("");
+          updateAllMenuItemControls();
+          if (dom.menuNav.querySelector(".category-btn")) {
+            dom.menuNav.querySelector(".category-btn").click();
+          }
+        }
 
-            function updateAllMenuItemControls() {
-                document.querySelectorAll('.card-controls').forEach(c => {
-                    const id = parseInt(c.dataset.id); 
-                    const item = cart.find(i => i.id === id);
-                    c.innerHTML = item ? `<div class="quantity-adjuster"><button data-action="decrease">-</button><span>${item.quantity}</span><button data-action="increase">+</button></div>` : `<button class="add-btn" data-action="add">Add</button>`;
-                });
-            }
-            
-            function updateCartDisplay() {
-                dom.cartItemsList.innerHTML = cart.length 
-                    ? cart.map(item => `<li class="cart-item"><span class="cart-item-name">${item.name[currentCartLanguage]} (x${item.quantity})</span><span>$${(item.price * item.quantity).toFixed(2)}</span></li>`).join('') 
-                    : `<li class="cart-empty-message">${emptyCartMessages[currentCartLanguage]}</li>`;
-                updateCartTotals(); 
-                updateAllMenuItemControls(); 
-                saveState();
-            }
+        function updateAllMenuItemControls() {
+          document.querySelectorAll(".card-controls").forEach((c) => {
+            const id = parseInt(c.dataset.id);
+            const item = cart.find((i) => i.id === id);
+            c.innerHTML = item
+              ? `<div class="quantity-adjuster"><button data-action="decrease">-</button><span>${item.quantity}</span><button data-action="increase">+</button></div>`
+              : `<button class="add-btn" data-action="add">Add</button>`;
+          });
+        }
 
-            function updateCartTotals() {
-                const totalUSD = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-                document.getElementById('cart-total-usd').textContent = `$${totalUSD.toFixed(2)}`;
-                document.getElementById('cart-total-khr').textContent = `*៛${formatKHR(totalUSD)}`;
-                dom.submitBtn.disabled = cart.length === 0 || !dom.tableInput.value;
-            }
+        function updateCartDisplay() {
+          if (cart.length === 0) {
+            const emptyCartMessages = {
+              en: "Please select items",
+              kh: "សូមជ្រើសរើសមុខទំនិញ",
+              zh: "请选择商品",
+            };
+            dom.cartItemsList.innerHTML = `<li class="cart-empty-message">${emptyCartMessages[currentCartLanguage]}</li>`;
+          } else {
+            dom.cartItemsList.innerHTML = cart
+              .map((item) => {
+                const lineTotal = item.price * item.quantity;
+                return `
+                        <li class="cart-item-card" data-id="${item.id}">
+                            <div class="cart-item-card-main">
+                                <span class="cart-item-card-name">${
+                                  item.name[currentCartLanguage]
+                                }</span>
+                                <button class="cart-item-card-remove-btn" data-action="remove">×</button>
+                            </div>
+                            <div class="cart-item-card-footer">
+                                <div class="quantity-adjuster">
+                                    <button data-action="decrease">-</button>
+                                    <span>${item.quantity}</span>
+                                    <button data-action="increase">+</button>
+                                </div>
+                                <span class="cart-item-card-price">$${lineTotal.toFixed(
+                                  2
+                                )}</span>
+                            </div>
+                        </li>`;
+              })
+              .join("");
+          }
+          updateCartTotals();
+          updateAllMenuItemControls();
+          saveState();
+        }
 
-            function handleMenuInteraction(id, action) {
-                const itemInCart = cart.find(item => item.id === id);
-                if (action === 'add' && !itemInCart) {
-                    cart.push({ ...menuData.find(item => item.id === id), quantity: 1 });
-                } else if (itemInCart) {
-                    if (action === 'increase') itemInCart.quantity++;
-                    if (action === 'decrease') {
-                        itemInCart.quantity--;
-                        if (itemInCart.quantity === 0) cart = cart.filter(item => item.id !== id);
-                    }
-                }
-                updateCartDisplay();
-            }
+        function updateCartTotals() {
+          const totalUSD = cart.reduce(
+            (sum, item) => sum + item.price * item.quantity,
+            0
+          );
+          document.getElementById(
+            "cart-total-usd"
+          ).textContent = `$${totalUSD.toFixed(2)}`;
+          document.getElementById(
+            "cart-total-khr"
+          ).textContent = `*៛${formatKHR(totalUSD)}`;
+          dom.submitBtn.disabled = cart.length === 0 || !dom.tableInput.value;
+        }
 
-            function submitOrder() {
-                if (dom.submitBtn.disabled) return;
-                const totalUSD = cart.reduce((sum, i) => sum + (i.price * i.quantity), 0);
-                const order = {
-                    orderId: getDailyOrderNumber(), tableNumber: dom.tableInput.value,
-                    timestamp: new Date().toISOString(),
-                    items: JSON.parse(JSON.stringify(cart)), totalUSD, status: 'Paid'
-                };
-                orderHistory.push(order);
-                generateReceipt(order);
-                dom.receiptModal.style.display = 'flex';
-                resetCart();
-                saveState();
-            }
-            
-            function resetCart() {
-                cart = []; 
-                dom.tableInput.value = ''; 
-                updateCartDisplay();
-            }
+        function handleCartItemInteraction(id, action) {
+          const itemInCart = cart.find((item) => item.id === id);
+          if (!itemInCart) return;
 
-            // MODIFIED: Receipt now defaults to Khmer language
-            function generateReceipt(order) {
-                 const date = new Date(order.timestamp);
-                dom.receiptContent.innerHTML = `
-                    <div class="receipt-header"><h2>អាហារដ្ឋានដើមជម្ពូរ</h2><p>សូមអរគុណ!</p></div>
+          if (action === "increase") {
+            itemInCart.quantity++;
+          } else if (action === "decrease") {
+            itemInCart.quantity--;
+            if (itemInCart.quantity === 0) {
+              cart = cart.filter((item) => item.id !== id);
+            }
+          } else if (action === "remove") {
+            cart = cart.filter((item) => item.id !== id);
+          }
+          updateCartDisplay();
+        }
+
+        function submitOrder() {
+          if (dom.submitBtn.disabled) return;
+          const totalUSD = cart.reduce(
+            (sum, i) => sum + i.price * i.quantity,
+            0
+          );
+          const order = {
+            orderId: getDailyOrderNumber(),
+            tableNumber: dom.tableInput.value,
+            timestamp: new Date().toISOString(),
+            items: JSON.parse(JSON.stringify(cart)),
+            totalUSD,
+            status: "Paid",
+          };
+          orderHistory.push(order);
+          generateReceipt(order);
+          dom.receiptModal.style.display = "flex";
+          resetCart();
+          saveState();
+        }
+
+        function resetCart() {
+          cart = [];
+          dom.tableInput.value = "";
+          updateCartDisplay();
+        }
+
+        function generateReceipt(order) {
+          const date = new Date(order.timestamp);
+          const subtotal = order.totalUSD;
+          const tax = 0;
+          const grandTotal = subtotal + tax;
+
+          dom.receiptContainer.innerHTML = `
+                <div class="receipt-content">
+                    <div class="receipt-header">
+                        <div class="receipt-logo">អាហារដ្ឋានដើមជម្ពូរ</div>
+                        <p>THANK YOU! សូមអរគុណ! 谢谢!</p>
+                    </div>
                     <div class="receipt-info">
-                        <div><span>លេខបញ្ជាទិញ:</span> <span>${order.orderId}</span></div>
-                        <div><span>តុលេខ:</span> <span>${order.tableNumber}</span></div>
-                        <div><span>កាលបរិច្ឆេទ:</span> <span>${date.toLocaleString('en-GB')}</span></div>
+                        <div><span>Order ID:</span> <span>${
+                          order.orderId
+                        }</span></div>
+                        <div><span>Table No:</span> <span>${
+                          order.tableNumber
+                        }</span></div>
+                        <div><span>Date:</span> <span>${date.toLocaleString(
+                          "en-GB"
+                        )}</span></div>
                     </div>
                     <table class="receipt-table">
-                        <thead><tr><th>មុខទំនិញ</th><th class="col-qty">ចំនួន</th><th class="col-price">តម្លៃ</th></tr></thead>
-                        <tbody>${order.items.map(i => `<tr><td>${i.name.kh}</td><td class="col-qty">${i.quantity}</td><td class="col-price">$${(i.price * i.quantity).toFixed(2)}</td></tr>`).join('')}</tbody>
+                        <thead><tr><th class="col-item">Item</th><th class="col-qty">Qty</th><th class="col-price">Price</th><th class="col-total">Total</th></tr></thead>
+                        <tbody>
+                            ${order.items
+                              .map(
+                                (i) =>
+                                  `<tr><td class="col-item"><div class="name-kh">${
+                                    i.name.kh
+                                  }</div><div class="name-en">${i.name.en} / ${
+                                    i.name.zh
+                                  }</div></td><td class="col-qty">${
+                                    i.quantity
+                                  }</td><td class="col-price">$${i.price.toFixed(
+                                    2
+                                  )}</td><td class="col-total">$${(
+                                    i.price * i.quantity
+                                  ).toFixed(2)}</td></tr>`
+                              )
+                              .join("")}
+                        </tbody>
                     </table>
                     <div class="receipt-totals">
-                        <div class="total-row"><span>សរុប</span><span>$${order.totalUSD.toFixed(2)}</span></div>
-                        <div class="total-row-khr"><span></span><span>៛${formatKHR(order.totalUSD)}</span></div>
+                        <div class="total-row"><span>Subtotal</span> <span>$${subtotal.toFixed(
+                          2
+                        )}</span></div>
+                        <div class="total-row"><span>Tax (0%)</span> <span>$${tax.toFixed(
+                          2
+                        )}</span></div>
+                        <div class="total-row grand-total-row"><span>TOTAL</span> <span>$${grandTotal.toFixed(
+                          2
+                        )}</span></div>
+                        <div class="grand-total-khr">៛${formatKHR(
+                          grandTotal
+                        )}</div>
                     </div>
-                    <div class="receipt-footer"><p>អាហារដ្ឋានដើមជម្ពូរ</p></div>
-                    <div class="receipt-actions" style="margin-top:25px; display:flex; gap:12px;">
-                        <button id="print-receipt-btn" class="action-btn" style="background-color:var(--success-color); color:white;">Print</button>
-                        <button id="close-receipt-btn" class="action-btn" style="background-color:#6c757d; color:white;">Close</button>
-                    </div>`;
-                document.getElementById('print-receipt-btn').addEventListener('click', () => window.print());
-                document.getElementById('close-receipt-btn').addEventListener('click', () => dom.receiptModal.style.display = 'none');
-            }
+                    <div class="receipt-footer"><p>Wifi: DCDJ_FreeWifi | Pass: 12345678</p><p>Find us on Facebook & Instagram!</p></div>
+                </div>
+                <div class="receipt-actions">
+                    <button id="print-receipt-btn" class="action-btn" style="background-color:var(--success-color); color:white;">Print</button>
+                    <button id="close-receipt-btn" class="action-btn" style="background-color:#6c757d; color:white;">Close</button>
+                </div>`;
 
-            function renderOrderHistory() {
-                 dom.historyList.innerHTML = orderHistory.slice().reverse().map(order => `
-                    <tr class="${order.status === 'Voided' ? 'voided-order' : ''}" data-order-id="${order.orderId}">
-                        <td>${order.orderId}</td><td>${order.tableNumber}</td>
-                        <td>${new Date(order.timestamp).toLocaleDateString('en-GB')}</td>
+          dom.receiptContainer
+            .querySelector("#print-receipt-btn")
+            .addEventListener("click", () => window.print());
+          dom.receiptContainer
+            .querySelector("#close-receipt-btn")
+            .addEventListener(
+              "click",
+              () => (dom.receiptModal.style.display = "none")
+            );
+        }
+
+        function getFilteredHistory() {
+          let filtered = [...orderHistory];
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+
+          if (historyDateFilter === "today") {
+            filtered = filtered.filter((o) => new Date(o.timestamp) >= today);
+          } else if (historyDateFilter === "yesterday") {
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
+            filtered = filtered.filter((o) => {
+              const orderDate = new Date(o.timestamp);
+              return orderDate >= yesterday && orderDate < today;
+            });
+          }
+
+          return filtered;
+        }
+
+        function renderOrderHistory() {
+          const filteredHistory = getFilteredHistory();
+          dom.historyList.innerHTML = filteredHistory
+            .slice()
+            .reverse()
+            .map((order) => {
+              const isVoided = order.status === "Voided";
+              return `
+                    <tr data-order-id="${order.orderId}">
+                        <td>${order.orderId}</td>
+                        <td>${order.tableNumber}</td>
+                        <td>${new Date(order.timestamp).toLocaleString(
+                          "en-GB"
+                        )}</td>
                         <td>$${order.totalUSD.toFixed(2)}</td>
-                        <td><button class="void-btn" ${order.status === 'Voided' ? 'disabled' : ''}>Void</button></td>
-                    </tr>`).join('');
-                const totalRevenue = orderHistory.filter(o => o.status === 'Paid').reduce((sum, o) => sum + o.totalUSD, 0);
-                dom.grandTotalEl.textContent = `$${totalRevenue.toFixed(2)}`;
-                document.getElementById('download-csv-btn').disabled = orderHistory.length === 0;
-            }
+                        <td class="cell-status"><span class="status-pill status-${order.status.toLowerCase()}">${
+                order.status
+              }</span></td>
+                        <td class="actions-cell">
+                            <button class="kebab-btn">${icons.kebab}</button>
+                            <ul class="kebab-menu">
+                                <li class="kebab-menu-item" data-action="view">${
+                                  icons.view
+                                } View Receipt</li>
+                                <li class="kebab-menu-item void-item" data-action="void" ${
+                                  isVoided ? "disabled" : ""
+                                }>${icons.void} Void Order</li>
+                            </ul>
+                        </td>
+                    </tr>`;
+            })
+            .join("");
 
-            function voidOrder(orderId) {
-                const order = orderHistory.find(o => o.orderId === orderId);
-                if (order && confirm(`Are you sure you want to void Order ID: ${orderId}? This cannot be undone.`)) {
-                    order.status = 'Voided';
-                    renderOrderHistory(); 
-                    saveState();
-                }
-            }
-            
-            function downloadItemizedReportCSV() {
-                if (orderHistory.length === 0) return alert("No history to download.");
-                let csvContent = "OrderID,Date,Time,Table,Status,ItemName_EN,ItemName_KH,ItemName_ZH,Quantity,UnitPrice_USD,LineTotal_USD\n";
-                orderHistory.forEach(order => {
-                    const date = new Date(order.timestamp);
-                    order.items.forEach(item => {
-                        const row = [
-                            order.orderId, date.toLocaleDateString('en-CA'), date.toLocaleTimeString('en-GB'),
-                            order.tableNumber, order.status, 
-                            `"${item.name.en}"`, `"${item.name.kh}"`, `"${item.name.zh}"`,
-                            item.quantity, item.price.toFixed(2), (item.price * item.quantity).toFixed(2)
-                        ].join(',');
-                        csvContent += row + "\n";
-                    });
-                });
-                const link = document.createElement("a");
-                link.setAttribute("href", 'data:text/csv;charset=utf-8,' + encodeURI(csvContent));
-                link.setAttribute("download", `Itemized_Sales_Report_${new Date().toISOString().split('T')[0]}.csv`);
-                link.click();
-            }
+          const totalRevenue = filteredHistory
+            .filter((o) => o.status === "Paid")
+            .reduce((sum, o) => sum + o.totalUSD, 0);
+          dom.grandTotalEl.textContent = `$${totalRevenue.toFixed(2)}`;
 
-            // --- EVENT LISTENERS ---
-            document.querySelector('.sidebar-tabs').addEventListener('click', e => {
-                if(e.target.matches('.tab-btn')) {
-                    const tab = e.target.dataset.tab;
-                    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                    document.querySelectorAll('.sidebar-panel').forEach(p => p.style.display = 'none');
-                    e.target.classList.add('active');
-                    document.getElementById(`panel-${tab}`).style.display = 'block';
-                    if (tab === 'history') { renderOrderHistory(); }
-                }
+          dom.historySummaryText.textContent = `Showing ${filteredHistory.length} order(s)`;
+          dom.downloadCsvBtn.disabled = filteredHistory.length === 0;
+          dom.historyEmptyMsg.style.display =
+            filteredHistory.length === 0 ? "block" : "none";
+        }
+
+        function handleHistoryAction(orderId, action) {
+          const order = orderHistory.find((o) => o.orderId === orderId);
+          if (!order) return;
+
+          switch (action) {
+            case "void":
+              if (
+                confirm(
+                  `Are you sure you want to void Order ID: ${orderId}? This cannot be undone.`
+                )
+              ) {
+                order.status = "Voided";
+                renderOrderHistory();
+                saveState();
+              }
+              break;
+            case "view":
+              generateReceipt(order);
+              dom.receiptModal.style.display = "flex";
+              break;
+          }
+        }
+
+        function downloadItemizedReportCSV() {
+          const filteredData = getFilteredHistory();
+          if (filteredData.length === 0)
+            return alert("No data in the current view to download.");
+          let csvContent =
+            "OrderID,Date,Time,Table,Status,ItemName_EN,ItemName_KH,ItemName_ZH,Quantity,UnitPrice_USD,LineTotal_USD\n";
+          filteredData.forEach((order) => {
+            const date = new Date(order.timestamp);
+            order.items.forEach((item) => {
+              const row = [
+                order.orderId,
+                date.toLocaleDateString("en-CA"),
+                date.toLocaleTimeString("en-GB"),
+                order.tableNumber,
+                order.status,
+                `"${item.name.en}"`,
+                `"${item.name.kh}"`,
+                `"${item.name.zh}"`,
+                item.quantity,
+                item.price.toFixed(2),
+                (item.price * item.quantity).toFixed(2),
+              ].join(",");
+              csvContent += row + "\n";
             });
+          });
+          const link = document.createElement("a");
+          link.setAttribute(
+            "href",
+            "data:text/csv;charset=utf-8," + encodeURI(csvContent)
+          );
+          link.setAttribute(
+            "download",
+            `Filtered_Sales_Report_${
+              new Date().toISOString().split("T")[0]
+            }.csv`
+          );
+          link.click();
+        }
 
-            dom.menuNav.addEventListener('click', e => {
-                if (e.target.matches('.category-btn')) {
-                    dom.menuNav.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
-                    e.target.classList.add('active');
-                    const cat = e.target.dataset.category;
-                    document.querySelectorAll('.menu-item').forEach(i => i.classList.toggle('hidden', i.dataset.category !== cat));
-                }
-            });
-
-            dom.menuGrid.addEventListener('click', e => {
-                const controls = e.target.closest('.card-controls');
-                if (controls && e.target.matches('button')) {
-                    handleMenuInteraction(parseInt(controls.dataset.id), e.target.dataset.action);
-                }
-            });
-            
-            dom.cartLangSwitcher.addEventListener('click', e => {
-                if (e.target.matches('.lang-btn')) {
-                    const lang = e.target.dataset.lang;
-                    currentCartLanguage = lang;
-                    dom.cartLangSwitcher.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
-                    e.target.classList.add('active');
-                    updateCartDisplay();
-                }
-            });
-            
-            dom.tableInput.addEventListener('input', updateCartTotals);
-            dom.historyList.addEventListener('click', e => {
-                if (e.target.matches('.void-btn')) voidOrder(e.target.closest('tr').dataset.orderId);
-            });
-            dom.submitBtn.addEventListener('click', submitOrder);
-            document.getElementById('download-csv-btn').addEventListener('click', downloadItemizedReportCSV);
-            
-            // --- UTILITY & STATE FUNCTIONS ---
-            function getDailyOrderNumber() {
-                const today = new Date().toISOString().split('T')[0];
-                const lastDate = localStorage.getItem('pos_lastDate_v2');
-                let num = 1;
-                if (today === lastDate) {
-                    num = parseInt(localStorage.getItem('pos_lastNum_v2') || '0') + 1;
-                }
-                localStorage.setItem('pos_lastDate_v2', today); 
-                localStorage.setItem('pos_lastNum_v2', num);
-                return `${today.substring(8,10)}${today.substring(5,7)}-${String(num).padStart(3,'0')}`;
-            }
-
-            function saveState() { 
-                localStorage.setItem('pos_orderHistory_v2', JSON.stringify(orderHistory)); 
-            }
-
-            function loadState() { 
-                orderHistory = JSON.parse(localStorage.getItem('pos_orderHistory_v2') || '[]'); 
-            }
-
-            // --- INITIALIZATION ---
-            loadState();
-            renderMenu();
-            updateCartDisplay();
-            renderOrderHistory(); 
-            setInterval(() => { 
-                document.getElementById('current-time').textContent = new Date().toLocaleTimeString('en-GB'); 
-            }, 1000);
+        // --- EVENT LISTENERS ---
+        document.addEventListener("click", (e) => {
+          // Close kebab menu if clicked outside
+          if (!e.target.closest(".actions-cell")) {
+            document
+              .querySelectorAll(".kebab-menu.visible")
+              .forEach((menu) => menu.classList.remove("visible"));
+          }
         });
+
+        document
+          .querySelector(".sidebar-tabs")
+          .addEventListener("click", (e) => {
+            if (e.target.matches(".tab-btn")) {
+              const tab = e.target.dataset.tab;
+              document
+                .querySelectorAll(".tab-btn")
+                .forEach((b) => b.classList.remove("active"));
+              document
+                .querySelectorAll(".sidebar-panel")
+                .forEach((p) => p.classList.remove("active"));
+              e.target.classList.add("active");
+              document.getElementById(`panel-${tab}`).classList.add("active");
+              if (tab === "history") {
+                renderOrderHistory();
+              }
+            }
+          });
+
+        dom.menuNav.addEventListener("click", (e) => {
+          if (e.target.matches(".category-btn")) {
+            dom.menuNav
+              .querySelectorAll(".category-btn")
+              .forEach((b) => b.classList.remove("active"));
+            e.target.classList.add("active");
+            const cat = e.target.dataset.category;
+            document
+              .querySelectorAll(".menu-item")
+              .forEach((i) =>
+                i.classList.toggle("hidden", i.dataset.category !== cat)
+              );
+          }
+        });
+
+        dom.menuGrid.addEventListener("click", (e) => {
+          const button = e.target.closest("button[data-action]");
+          if (button) {
+            const id = parseInt(button.closest(".card-controls").dataset.id);
+            const action = button.dataset.action;
+            const itemInCart = cart.find((item) => item.id === id);
+            if (action === "add" && !itemInCart) {
+              cart.push({
+                ...menuData.find((item) => item.id === id),
+                quantity: 1,
+              });
+            } else if (itemInCart) {
+              handleCartItemInteraction(id, action);
+              return;
+            }
+            updateCartDisplay();
+          }
+        });
+
+        dom.cartItemsList.addEventListener("click", (e) => {
+          const button = e.target.closest("button[data-action]");
+          if (button) {
+            const card = e.target.closest(".cart-item-card");
+            const id = parseInt(card.dataset.id);
+            const action = button.dataset.action;
+            handleCartItemInteraction(id, action);
+          }
+        });
+
+        dom.cartLangSwitcher.addEventListener("click", (e) => {
+          if (e.target.matches(".lang-btn")) {
+            const lang = e.target.dataset.lang;
+            currentCartLanguage = lang;
+            dom.cartLangSwitcher
+              .querySelectorAll(".lang-btn")
+              .forEach((btn) => btn.classList.remove("active"));
+            e.target.classList.add("active");
+            updateCartDisplay();
+          }
+        });
+
+        dom.tableInput.addEventListener("input", updateCartTotals);
+        dom.submitBtn.addEventListener("click", submitOrder);
+
+        dom.historyList.addEventListener("click", (e) => {
+          const kebabBtn = e.target.closest(".kebab-btn");
+          const menuItem = e.target.closest(".kebab-menu-item");
+
+          if (kebabBtn) {
+            const menu = kebabBtn.nextElementSibling;
+            const isVisible = menu.classList.contains("visible");
+            // Close all other menus
+            document
+              .querySelectorAll(".kebab-menu.visible")
+              .forEach((m) => m.classList.remove("visible"));
+            // Toggle current menu
+            if (!isVisible) {
+              menu.classList.add("visible");
+            }
+          } else if (menuItem && !menuItem.hasAttribute("disabled")) {
+            const orderId = e.target.closest("tr").dataset.orderId;
+            const action = menuItem.dataset.action;
+            handleHistoryAction(orderId, action);
+            // Hide menu after action
+            menuItem.closest(".kebab-menu").classList.remove("visible");
+          }
+        });
+
+        dom.historyDateFilters.addEventListener("click", (e) => {
+          if (e.target.matches(".date-filter-btn")) {
+            historyDateFilter = e.target.dataset.period;
+            dom.historyDateFilters
+              .querySelectorAll(".date-filter-btn")
+              .forEach((b) => b.classList.remove("active"));
+            e.target.classList.add("active");
+            renderOrderHistory();
+          }
+        });
+        dom.downloadCsvBtn.addEventListener("click", downloadItemizedReportCSV);
+
+        // --- UTILITY & STATE FUNCTIONS ---
+        function getDailyOrderNumber() {
+          const today = new Date().toISOString().split("T")[0];
+          const lastDate = localStorage.getItem("pos_lastDate_v2");
+          let num = 1;
+          if (today === lastDate) {
+            num = parseInt(localStorage.getItem("pos_lastNum_v2") || "0") + 1;
+          }
+          localStorage.setItem("pos_lastDate_v2", today);
+          localStorage.setItem("pos_lastNum_v2", num);
+          return `${today.substring(8, 10)}${today.substring(5, 7)}-${String(
+            num
+          ).padStart(3, "0")}`;
+        }
+
+        function saveState() {
+          localStorage.setItem(
+            "pos_orderHistory_v2",
+            JSON.stringify(orderHistory)
+          );
+        }
+
+        function loadState() {
+          orderHistory = JSON.parse(
+            localStorage.getItem("pos_orderHistory_v2") || "[]"
+          );
+        }
+
+        // --- INITIALIZATION ---
+        loadState();
+        renderMenu();
+        updateCartDisplay();
+        renderOrderHistory();
+        setInterval(() => {
+          document.getElementById("current-time").textContent =
+            new Date().toLocaleTimeString("en-GB");
+        }, 1000);
+      });
     </script>
-</body>
+  </body>
 </html>
