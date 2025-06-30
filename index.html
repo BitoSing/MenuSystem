@@ -1321,18 +1321,25 @@
           }
         }
 
+        // --- MODIFIED FUNCTION ---
         function downloadItemizedReportCSV() {
           const filteredData = getFilteredHistory();
-          if (filteredData.length === 0)
+          if (filteredData.length === 0) {
             return alert("No data in the current view to download.");
-          let csvContent =
-            "OrderID,Date,Time,Table,Status,ItemName_EN,ItemName_KH,ItemName_ZH,Quantity,UnitPrice_USD,LineTotal_USD\n";
+          }
+
+          // Prepend the UTF-8 Byte Order Mark (BOM). This is the key for Excel.
+          let csvContent = "\uFEFF";
+
+          // Add the header row
+          csvContent += "OrderID,Date,Time,Table,Status,ItemName_EN,ItemName_KH,ItemName_ZH,Quantity,UnitPrice_USD,LineTotal_USD\n";
+
           filteredData.forEach((order) => {
             const date = new Date(order.timestamp);
             order.items.forEach((item) => {
               const row = [
                 order.orderId,
-                date.toLocaleDateString("en-CA"),
+                date.toLocaleDateString("en-CA"), // YYYY-MM-DD format
                 date.toLocaleTimeString("en-GB"),
                 order.tableNumber,
                 order.status,
@@ -1346,18 +1353,22 @@
               csvContent += row + "\n";
             });
           });
+
+          // Use Blob for a more robust download method
+          const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
           const link = document.createElement("a");
-          link.setAttribute(
-            "href",
-            "data:text/csv;charset=utf-8," + encodeURI(csvContent)
-          );
+
+          const url = URL.createObjectURL(blob);
+          link.setAttribute("href", url);
           link.setAttribute(
             "download",
-            `Filtered_Sales_Report_${
-              new Date().toISOString().split("T")[0]
-            }.csv`
+            `Filtered_Sales_Report_${new Date().toISOString().split("T")[0]}.csv`
           );
+          
+          // Append to body, click, and remove for robust cross-browser support
+          document.body.appendChild(link);
           link.click();
+          document.body.removeChild(link);
         }
 
         // --- EVENT LISTENERS ---
