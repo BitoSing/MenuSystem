@@ -6,7 +6,7 @@
     <title>អាហារដ្ឋានដើមជម្ពូរ | Business POS</title>
 
     <style>
-      /* --- PROFESSIONAL DESIGN SYSTEM v7.3 (Streamlined History Actions) --- */
+      /* --- PROFESSIONAL DESIGN SYSTEM v7.4 (Improved Filtering UX) --- */
       @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Noto+Sans+Khmer:wght@400;500;700&family=Roboto+Mono:wght@400;700&display=swap");
       :root {
         --primary-color: #0d5ea6; /* Deep Blue */
@@ -54,6 +54,7 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+        gap: 20px;
       }
       .main-header h1 {
         font-family: "Noto Sans Khmer", serif;
@@ -69,12 +70,33 @@
         align-items: flex-start;
       }
 
-      /* --- MENU SECTION --- */
+      /* --- MENU SECTION (UPDATED) --- */
+      .menu-controls-header {
+        margin-bottom: 25px;
+        display: none;
+      }
+      body.management-mode .menu-controls-header {
+        display: block;
+      }
+      #add-new-item-btn {
+        background-color: var(--success-color);
+        color: white;
+        padding: 12px 25px;
+        font-size: 1.1rem;
+        border-radius: 8px;
+        cursor: pointer;
+        border: none;
+        font-weight: 600;
+      }
       .menu-nav {
         display: flex;
         gap: 10px;
-        margin-bottom: 25px;
+        margin-bottom: 15px;
         flex-wrap: wrap;
+      }
+      #sub-category-nav {
+        margin-top: 15px;
+        margin-bottom: 25px;
       }
       .category-btn {
         padding: 10px 25px;
@@ -105,9 +127,30 @@
         box-shadow: var(--shadow);
         display: flex;
         flex-direction: column;
+        position: relative; /* For remove button */
       }
       .menu-item.hidden {
         display: none;
+      }
+      .remove-item-btn {
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        background-color: var(--danger-color);
+        color: white;
+        border: 2px solid white;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        cursor: pointer;
+        display: none; /* Hidden by default */
+        z-index: 10;
+        line-height: 1;
+      }
+      body.management-mode .remove-item-btn {
+        display: block;
       }
       .menu-item-content {
         padding: 20px;
@@ -590,7 +633,7 @@
         color: var(--primary-color);
       }
 
-      /* --- RECEIPT MODAL --- */
+      /* --- MODAL STYLES (UPDATED for Add Item) --- */
       .modal-overlay {
         position: fixed;
         top: 0;
@@ -603,7 +646,11 @@
         justify-content: center;
         align-items: center;
         z-index: 1000;
+        overflow-y: auto;
+        padding: 20px;
       }
+
+      /* --- RECEIPT MODAL --- */
       .receipt-container {
         background: #fff;
         width: 90%;
@@ -714,6 +761,46 @@
         gap: 12px;
       }
 
+      /* --- ADD ITEM MODAL STYLES --- */
+      .add-item-container {
+        background: var(--surface-color);
+        padding: 30px;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        width: 100%;
+        max-width: 550px;
+      }
+      .add-item-container h2 {
+        margin-top: 0;
+        font-size: 1.8rem;
+        color: var(--primary-color);
+      }
+      #add-item-form {
+        display: grid;
+        gap: 20px;
+      }
+      .form-group {
+        display: flex;
+        flex-direction: column;
+      }
+      .form-group label {
+        margin-bottom: 8px;
+        font-weight: 600;
+        font-size: 0.9rem;
+      }
+      .form-group input {
+        padding: 12px;
+        font-size: 1rem;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        width: 100%;
+      }
+      #add-item-form-actions {
+        display: flex;
+        gap: 15px;
+        margin-top: 10px;
+      }
+
       /* --- MOBILE RESPONSIVE STYLES --- */
       @media (max-width: 1024px) {
         .main-content {
@@ -722,6 +809,9 @@
         .sidebar {
           position: static;
           max-height: none;
+        }
+        .main-header {
+          flex-wrap: wrap;
         }
         .main-header h1 {
           font-size: 1.75rem;
@@ -734,7 +824,8 @@
       @media (max-width: 768px) {
         .main-header {
           flex-direction: column;
-          gap: 10px;
+          gap: 15px;
+          align-items: flex-start;
         }
         .menu-grid {
           grid-template-columns: 1fr;
@@ -774,17 +865,36 @@
   <body>
     <header class="main-header">
       <h1>អាហារដ្ឋានដើមជម្ពូរ</h1>
-      <div
-        id="current-time"
-        style="font-family: var(--font-mono); font-size: 1rem"
-      ></div>
+      <div style="display: flex; align-items: center; gap: 20px">
+        <button
+          id="manage-menu-btn"
+          class="action-btn"
+          style="
+            width: auto;
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            background-color: var(--secondary-accent-color);
+            color: white;
+          "
+        >
+          Manage Menu
+        </button>
+        <div
+          id="current-time"
+          style="font-family: var(--font-mono); font-size: 1rem"
+        ></div>
+      </div>
     </header>
 
     <main class="container">
       <div class="main-content">
         <!-- Menu Section -->
         <section class="menu-section">
+          <div class="menu-controls-header">
+            <button id="add-new-item-btn">+ Add New Item</button>
+          </div>
           <div class="menu-nav" id="menu-nav"></div>
+          <div class="menu-nav" id="sub-category-nav" style="display: none"></div>
           <div class="menu-grid" id="menu-grid"></div>
         </section>
 
@@ -896,6 +1006,57 @@
       <div class="receipt-container" id="receipt-container"></div>
     </div>
 
+    <!-- Add Item Modal (NEW) -->
+    <div class="modal-overlay" id="add-item-modal">
+      <div class="add-item-container">
+        <h2 id="add-item-modal-title">Add New Menu Item</h2>
+        <form id="add-item-form">
+          <input type="hidden" id="edit-item-id" />
+          <div class="form-group">
+            <label for="item-name-kh">Name (Khmer)</label>
+            <input type="text" id="item-name-kh" required />
+          </div>
+          <div class="form-group">
+            <label for="item-name-en">Name (English)</label>
+            <input type="text" id="item-name-en" required />
+          </div>
+          <div class="form-group">
+            <label for="item-name-zh">Name (Chinese)</label>
+            <input type="text" id="item-name-zh" required />
+          </div>
+          <div class="form-group">
+            <label for="item-price-usd">Price (USD)</label>
+            <input type="number" id="item-price-usd" step="0.01" required />
+          </div>
+          <div class="form-group">
+            <label for="item-category">Category</label>
+            <input type="text" id="item-category" required placeholder="e.g., Food, Drinks, Snack"/>
+          </div>
+          <div class="form-group">
+            <label for="item-subcategory">Sub-category (Optional)</label>
+            <input type="text" id="item-subcategory" placeholder="e.g., គុយទាវ, បាយ"/>
+          </div>
+          <div id="add-item-form-actions">
+            <button
+              type="submit"
+              class="action-btn"
+              style="background-color: var(--success-color); color: white"
+            >
+              Save Item
+            </button>
+            <button
+              type="button"
+              id="close-add-modal-btn"
+              class="action-btn"
+              style="background-color: var(--text-secondary); color: white"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
     <script>
       document.addEventListener("DOMContentLoaded", () => {
         const KHR_RATE = 4100;
@@ -903,78 +1064,89 @@
         let orderHistory = [];
         let currentCartLanguage = "en";
         let historyDateFilter = "all";
+        let managementMode = false;
 
-        const menuData = [
+        let menuData = [
           {
             id: 1,
-            name: {
-              kh: "ប៊ឺហ្គឺសាច់គោ",
-              en: "Beef Burger",
-              zh: "牛肉汉堡",
-              py: "niúròu hànbǎo",
-            },
+            name: { kh: "ប៊ឺហ្គឺសាច់គោ", en: "Beef Burger", zh: "牛肉汉堡", py: "niúròu hànbǎo", },
             price: 5.5,
             category: "Food",
-          },
-          {
-            id: 2,
-            name: {
-              kh: "គុយទាវសាច់គោ",
-              en: "Beef Noodle Soup",
-              zh: "牛肉面",
-              py: "niúròu miàn",
-            },
-            price: 4.0,
-            category: "Food",
+            subcategory: "" // General food item
           },
           {
             id: 3,
-            name: {
-              kh: "កាហ្វេឡាតេ",
-              en: "Caffè Latte",
-              zh: "拿铁咖啡",
-              py: "nátiě kāfēi",
-            },
+            name: { kh: "កាហ្វេឡាតេ", en: "Caffè Latte", zh: "拿铁咖啡", py: "nátiě kāfēi", },
             price: 2.5,
             category: "Drinks",
           },
           {
             id: 4,
-            name: {
-              kh: "តែគុជទឹកដោះគោ",
-              en: "Bubble Milk Tea",
-              zh: "珍珠奶茶",
-              py: "zhēnzhū nǎichá",
-            },
+            name: { kh: "តែគុជទឹកដោះគោ", en: "Bubble Milk Tea", zh: "珍珠奶茶", py: "zhēnzhū nǎichá", },
             price: 2.75,
             category: "Drinks",
           },
           {
             id: 5,
-            name: {
-              kh: "ដំឡូងបារាំងបំពង",
-              en: "French Fries",
-              zh: "炸薯条",
-              py: "zhá shǔtiáo",
-            },
+            name: { kh: "ដំឡូងបារាំងបំពង", en: "French Fries", zh: "炸薯条", py: "zhá shǔtiáo", },
             price: 2.0,
             category: "Snack",
           },
           {
             id: 6,
-            name: {
-              kh: "ឈុតអាហារថ្ងៃត្រង់",
-              en: "Lunch Set",
-              zh: "午餐套餐",
-              py: "wǔcān tàocān",
-            },
+            name: { kh: "ឈុតអាហារថ្ងៃត្រង់", en: "Lunch Set", zh: "午餐套餐", py: "wǔcān tàocān", },
             price: 6.5,
             category: "Promotion",
           },
+          // --- NEW ITEMS ---
+          {
+            id: 7,
+            name: { kh: 'គុយទាវសាច់ជ្រូក', en: 'Pork Noodle Soup', zh: '猪肉面', py: 'zhūròu miàn' },
+            price: parseFloat((10000 / KHR_RATE).toFixed(2)),
+            category: 'Food',
+            subcategory: 'គុយទាវ'
+          },
+          {
+            id: 2, // Re-using ID 2 for consistency
+            name: { kh: 'គុយទាវសាច់គោ', en: 'Beef Noodle Soup', zh: '牛肉面', py: 'niúròu miàn' },
+            price: parseFloat((11000 / KHR_RATE).toFixed(2)),
+            category: 'Food',
+            subcategory: 'គុយទាវ'
+          },
+          {
+            id: 8,
+            name: { kh: 'គុយទាវផាក់ឡូវ', en: 'Pak Lov Noodle Soup', zh: '卤味面', py: 'lǔwèi miàn' },
+            price: parseFloat((12000 / KHR_RATE).toFixed(2)),
+            category: 'Food',
+            subcategory: 'គុយទាវ'
+          },
+          {
+            id: 9,
+            name: { kh: 'បាយសាច់ជ្រូក', en: 'Pork with Rice', zh: '猪肉饭', py: 'zhūròu fàn' },
+            price: parseFloat((6000 / KHR_RATE).toFixed(2)),
+            category: 'Food',
+            subcategory: 'បាយ'
+          },
+          {
+            id: 10,
+            name: { kh: 'បាយសាច់មាន់', en: 'Chicken with Rice', zh: '鸡肉饭', py: 'jīròu fàn' },
+            price: parseFloat((12000 / KHR_RATE).toFixed(2)),
+            category: 'Food',
+            subcategory: 'បាយ'
+          },
+          {
+            id: 11,
+            name: { kh: 'បាយផាក់ឡូវ', en: 'Pak Lov with Rice', zh: '卤味饭', py: 'lǔwèi fàn' },
+            price: parseFloat((11000 / KHR_RATE).toFixed(2)),
+            category: 'Food',
+            subcategory: 'បាយ'
+          }
         ];
 
         const dom = {
+          body: document.body,
           menuNav: document.getElementById("menu-nav"),
+          subMenuNav: document.getElementById("sub-category-nav"),
           menuGrid: document.getElementById("menu-grid"),
           cartItemsList: document.getElementById("cart-items"),
           tableInput: document.getElementById("table-number-input"),
@@ -988,6 +1160,12 @@
           historyEmptyMsg: document.querySelector(".history-empty-message"),
           historySummaryText: document.getElementById("history-summary-text"),
           downloadCsvBtn: document.getElementById("download-csv-btn"),
+          // New management DOM elements
+          manageMenuBtn: document.getElementById("manage-menu-btn"),
+          addNewItemBtn: document.getElementById("add-new-item-btn"),
+          addItemModal: document.getElementById("add-item-modal"),
+          addItemForm: document.getElementById("add-item-form"),
+          closeAddItemModalBtn: document.getElementById("close-add-modal-btn"),
         };
 
         const icons = {
@@ -1001,56 +1179,65 @@
             maximumFractionDigits: 0,
           });
         }
-
+        
+        // --- MENU RENDER & FILTER (REVISED LOGIC) ---
         function renderMenu() {
-          const categories = [
-            ...new Set(menuData.map((item) => item.category)),
-          ];
+          const categories = [...new Set(menuData.map((item) => item.category))];
           dom.menuNav.innerHTML = categories
-            .map(
-              (c) =>
-                `<button class="category-btn" data-category="${c}">${c}</button>`
-            )
+            .map((c) =>`<button class="category-btn" data-category="${c}">${c}</button>`)
             .join("");
+
           dom.menuGrid.innerHTML = menuData
-            .map(
-              (item) => `
-                    <div class="menu-item" data-id="${
-                      item.id
-                    }" data-category="${item.category}">
-                        <div class="menu-item-content">
-                            <div class="menu-item-names">
-                                <div class="lang-kh">${item.name.kh}</div>
-                                <div class="lang-en">${item.name.en}</div>
-                                <div class="lang-zh">${
-                                  item.name.zh
-                                } <span class="lang-py">(${
-                item.name.py
-              })</span></div>
+            .map((item) => `
+                <div class="menu-item hidden" data-id="${item.id}" data-category="${item.category}" data-subcategory="${item.subcategory || ''}">
+                    <button class="remove-item-btn" data-id="${item.id}">×</button>
+                    <div class="menu-item-content">
+                        <div class="menu-item-names">
+                            <div class="lang-kh">${item.name.kh}</div>
+                            <div class="lang-en">${item.name.en}</div>
+                            <div class="lang-zh">${item.name.zh} <span class="lang-py">(${item.name.py || '...'})</span></div>
+                        </div>
+                        <div class="menu-item-footer">
+                            <div class="price-display">
+                                <div class="price-usd">$${item.price.toFixed(2)}</div>
+                                <div class="price-khr">*៛${formatKHR(item.price)}</div>
                             </div>
-                            <div class="menu-item-footer">
-                                <div class="price-display">
-                                    <div class="price-usd">$${item.price.toFixed(
-                                      2
-                                    )}</div>
-                                    <div class="price-khr">*៛${formatKHR(
-                                      item.price
-                                    )}</div>
-                                </div>
-                                <div class="card-controls" data-id="${
-                                  item.id
-                                }"></div>
-                            </div>
+                            <div class="card-controls" data-id="${item.id}"></div>
                         </div>
                     </div>
-                `
-            )
+                </div>`)
             .join("");
+            
           updateAllMenuItemControls();
+          dom.subMenuNav.style.display = 'none';
+          dom.subMenuNav.innerHTML = '';
+          
           if (dom.menuNav.querySelector(".category-btn")) {
-            dom.menuNav.querySelector(".category-btn").click();
+             dom.menuNav.querySelector(".category-btn").click();
           }
         }
+        
+        // REVISED filterMenuItems function
+        function filterMenuItems(category, subcategory = null) {
+            document.querySelectorAll(".menu-item").forEach(item => {
+                const itemCat = item.dataset.category;
+                const itemSubCat = item.dataset.subcategory;
+                
+                let show = false;
+                if (itemCat === category) {
+                    // If no subcategory filter is applied, show all items in the category.
+                    if (subcategory === null) {
+                        show = true;
+                    } 
+                    // If a subcategory filter is applied, show only items matching that subcategory.
+                    else {
+                        show = (itemSubCat === subcategory);
+                    }
+                }
+                item.classList.toggle('hidden', !show);
+            });
+        }
+        
 
         function updateAllMenuItemControls() {
           document.querySelectorAll(".card-controls").forEach((c) => {
@@ -1062,13 +1249,10 @@
           });
         }
 
+        // --- CART LOGIC (Unchanged) ---
         function updateCartDisplay() {
           if (cart.length === 0) {
-            const emptyCartMessages = {
-              en: "Please select items",
-              kh: "សូមជ្រើសរើសមុខទំនិញ",
-              zh: "请选择商品",
-            };
+            const emptyCartMessages = { en: "Please select items", kh: "សូមជ្រើសរើសមុខទំនិញ", zh: "请选择商品" };
             dom.cartItemsList.innerHTML = `<li class="cart-empty-message">${emptyCartMessages[currentCartLanguage]}</li>`;
           } else {
             dom.cartItemsList.innerHTML = cart
@@ -1077,9 +1261,7 @@
                 return `
                         <li class="cart-item-card" data-id="${item.id}">
                             <div class="cart-item-card-main">
-                                <span class="cart-item-card-name">${
-                                  item.name[currentCartLanguage]
-                                }</span>
+                                <span class="cart-item-card-name">${item.name[currentCartLanguage]}</span>
                                 <button class="cart-item-card-remove-btn" data-action="remove">×</button>
                             </div>
                             <div class="cart-item-card-footer">
@@ -1088,9 +1270,7 @@
                                     <span>${item.quantity}</span>
                                     <button data-action="increase">+</button>
                                 </div>
-                                <span class="cart-item-card-price">$${lineTotal.toFixed(
-                                  2
-                                )}</span>
+                                <span class="cart-item-card-price">$${lineTotal.toFixed(2)}</span>
                             </div>
                         </li>`;
               })
@@ -1100,44 +1280,28 @@
           updateAllMenuItemControls();
           saveState();
         }
-
         function updateCartTotals() {
-          const totalUSD = cart.reduce(
-            (sum, item) => sum + item.price * item.quantity,
-            0
-          );
-          document.getElementById(
-            "cart-total-usd"
-          ).textContent = `$${totalUSD.toFixed(2)}`;
-          document.getElementById(
-            "cart-total-khr"
-          ).textContent = `*៛${formatKHR(totalUSD)}`;
+          const totalUSD = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+          document.getElementById("cart-total-usd").textContent = `$${totalUSD.toFixed(2)}`;
+          document.getElementById("cart-total-khr").textContent = `*៛${formatKHR(totalUSD)}`;
           dom.submitBtn.disabled = cart.length === 0 || !dom.tableInput.value;
         }
-
         function handleCartItemInteraction(id, action) {
           const itemInCart = cart.find((item) => item.id === id);
           if (!itemInCart) return;
 
-          if (action === "increase") {
-            itemInCart.quantity++;
-          } else if (action === "decrease") {
+          if (action === "increase") itemInCart.quantity++;
+          else if (action === "decrease") {
             itemInCart.quantity--;
-            if (itemInCart.quantity === 0) {
-              cart = cart.filter((item) => item.id !== id);
-            }
-          } else if (action === "remove") {
-            cart = cart.filter((item) => item.id !== id);
-          }
+            if (itemInCart.quantity === 0) cart = cart.filter((item) => item.id !== id);
+          } else if (action === "remove") cart = cart.filter((item) => item.id !== id);
           updateCartDisplay();
         }
 
+        // --- ORDER & RECEIPT LOGIC (Unchanged) ---
         function submitOrder() {
           if (dom.submitBtn.disabled) return;
-          const totalUSD = cart.reduce(
-            (sum, i) => sum + i.price * i.quantity,
-            0
-          );
+          const totalUSD = cart.reduce((sum, i) => sum + i.price * i.quantity, 0);
           const order = {
             orderId: getDailyOrderNumber(),
             tableNumber: dom.tableInput.value,
@@ -1152,19 +1316,14 @@
           resetCart();
           saveState();
         }
-
         function resetCart() {
           cart = [];
           dom.tableInput.value = "";
           updateCartDisplay();
         }
-
         function generateReceipt(order) {
           const date = new Date(order.timestamp);
-          const subtotal = order.totalUSD;
-          const tax = 0;
-          const grandTotal = subtotal + tax;
-
+          const grandTotal = order.totalUSD;
           dom.receiptContainer.innerHTML = `
                 <div class="receipt-content">
                     <div class="receipt-header">
@@ -1172,50 +1331,19 @@
                         <p>THANK YOU! សូមអរគុណ! 谢谢!</p>
                     </div>
                     <div class="receipt-info">
-                        <div><span>Order ID:</span> <span>${
-                          order.orderId
-                        }</span></div>
-                        <div><span>Table No:</span> <span>${
-                          order.tableNumber
-                        }</span></div>
-                        <div><span>Date:</span> <span>${date.toLocaleString(
-                          "en-GB"
-                        )}</span></div>
+                        <div><span>Order ID:</span> <span>${order.orderId}</span></div>
+                        <div><span>Table No:</span> <span>${order.tableNumber}</span></div>
+                        <div><span>Date:</span> <span>${date.toLocaleString("en-GB")}</span></div>
                     </div>
                     <table class="receipt-table">
                         <thead><tr><th class="col-item">Item</th><th class="col-qty">Qty</th><th class="col-price">Price</th><th class="col-total">Total</th></tr></thead>
                         <tbody>
-                            ${order.items
-                              .map(
-                                (i) =>
-                                  `<tr><td class="col-item"><div class="name-kh">${
-                                    i.name.kh
-                                  }</div><div class="name-en">${i.name.en} / ${
-                                    i.name.zh
-                                  }</div></td><td class="col-qty">${
-                                    i.quantity
-                                  }</td><td class="col-price">$${i.price.toFixed(
-                                    2
-                                  )}</td><td class="col-total">$${(
-                                    i.price * i.quantity
-                                  ).toFixed(2)}</td></tr>`
-                              )
-                              .join("")}
+                            ${order.items.map(i =>`<tr><td class="col-item"><div class="name-kh">${i.name.kh}</div><div class="name-en">${i.name.en} / ${i.name.zh}</div></td><td class="col-qty">${i.quantity}</td><td class="col-price">$${i.price.toFixed(2)}</td><td class="col-total">$${(i.price * i.quantity).toFixed(2)}</td></tr>`).join("")}
                         </tbody>
                     </table>
                     <div class="receipt-totals">
-                        <div class="total-row"><span>Subtotal</span> <span>$${subtotal.toFixed(
-                          2
-                        )}</span></div>
-                        <div class="total-row"><span>Tax (0%)</span> <span>$${tax.toFixed(
-                          2
-                        )}</span></div>
-                        <div class="total-row grand-total-row"><span>TOTAL</span> <span>$${grandTotal.toFixed(
-                          2
-                        )}</span></div>
-                        <div class="grand-total-khr">៛${formatKHR(
-                          grandTotal
-                        )}</div>
+                        <div class="total-row grand-total-row"><span>TOTAL</span> <span>$${grandTotal.toFixed(2)}</span></div>
+                        <div class="grand-total-khr">៛${formatKHR(grandTotal)}</div>
                     </div>
                     <div class="receipt-footer"><p>Wifi: DCDJ_FreeWifi | Pass: 12345678</p><p>Find us on Facebook & Instagram!</p></div>
                 </div>
@@ -1223,23 +1351,15 @@
                     <button id="print-receipt-btn" class="action-btn" style="background-color:var(--success-color); color:white;">Print</button>
                     <button id="close-receipt-btn" class="action-btn" style="background-color:#6c757d; color:white;">Close</button>
                 </div>`;
-
-          dom.receiptContainer
-            .querySelector("#print-receipt-btn")
-            .addEventListener("click", () => window.print());
-          dom.receiptContainer
-            .querySelector("#close-receipt-btn")
-            .addEventListener(
-              "click",
-              () => (dom.receiptModal.style.display = "none")
-            );
+          dom.receiptContainer.querySelector("#print-receipt-btn").addEventListener("click", () => window.print());
+          dom.receiptContainer.querySelector("#close-receipt-btn").addEventListener("click", () => (dom.receiptModal.style.display = "none"));
         }
 
+        // --- HISTORY PANEL LOGIC (Unchanged) ---
         function getFilteredHistory() {
           let filtered = [...orderHistory];
           const today = new Date();
           today.setHours(0, 0, 0, 0);
-
           if (historyDateFilter === "today") {
             filtered = filtered.filter((o) => new Date(o.timestamp) >= today);
           } else if (historyDateFilter === "yesterday") {
@@ -1250,65 +1370,40 @@
               return orderDate >= yesterday && orderDate < today;
             });
           }
-
           return filtered;
         }
-
         function renderOrderHistory() {
           const filteredHistory = getFilteredHistory();
-          dom.historyList.innerHTML = filteredHistory
-            .slice()
-            .reverse()
-            .map((order) => {
+          dom.historyList.innerHTML = filteredHistory.slice().reverse().map((order) => {
               const isVoided = order.status === "Voided";
               return `
-                    <tr data-order-id="${order.orderId}">
-                        <td>${order.orderId}</td>
-                        <td>${order.tableNumber}</td>
-                        <td>${new Date(order.timestamp).toLocaleString(
-                          "en-GB"
-                        )}</td>
-                        <td>$${order.totalUSD.toFixed(2)}</td>
-                        <td class="cell-status"><span class="status-pill status-${order.status.toLowerCase()}">${
-                order.status
-              }</span></td>
-                        <td class="actions-cell">
-                            <button class="kebab-btn">${icons.kebab}</button>
-                            <ul class="kebab-menu">
-                                <li class="kebab-menu-item" data-action="view">${
-                                  icons.view
-                                } View Receipt</li>
-                                <li class="kebab-menu-item void-item" data-action="void" ${
-                                  isVoided ? "disabled" : ""
-                                }>${icons.void} Void Order</li>
-                            </ul>
-                        </td>
-                    </tr>`;
-            })
-            .join("");
-
-          const totalRevenue = filteredHistory
-            .filter((o) => o.status === "Paid")
-            .reduce((sum, o) => sum + o.totalUSD, 0);
+                <tr data-order-id="${order.orderId}">
+                    <td>${order.orderId}</td>
+                    <td>${order.tableNumber}</td>
+                    <td>${new Date(order.timestamp).toLocaleString("en-GB")}</td>
+                    <td>$${order.totalUSD.toFixed(2)}</td>
+                    <td class="cell-status"><span class="status-pill status-${order.status.toLowerCase()}">${order.status}</span></td>
+                    <td class="actions-cell">
+                        <button class="kebab-btn">${icons.kebab}</button>
+                        <ul class="kebab-menu">
+                            <li class="kebab-menu-item" data-action="view">${icons.view} View Receipt</li>
+                            <li class="kebab-menu-item void-item" data-action="void" ${isVoided ? "disabled" : ""}>${icons.void} Void Order</li>
+                        </ul>
+                    </td>
+                </tr>`;
+            }).join("");
+          const totalRevenue = filteredHistory.filter((o) => o.status === "Paid").reduce((sum, o) => sum + o.totalUSD, 0);
           dom.grandTotalEl.textContent = `$${totalRevenue.toFixed(2)}`;
-
           dom.historySummaryText.textContent = `Showing ${filteredHistory.length} order(s)`;
           dom.downloadCsvBtn.disabled = filteredHistory.length === 0;
-          dom.historyEmptyMsg.style.display =
-            filteredHistory.length === 0 ? "block" : "none";
+          dom.historyEmptyMsg.style.display = filteredHistory.length === 0 ? "block" : "none";
         }
-
         function handleHistoryAction(orderId, action) {
           const order = orderHistory.find((o) => o.orderId === orderId);
           if (!order) return;
-
           switch (action) {
             case "void":
-              if (
-                confirm(
-                  `Are you sure you want to void Order ID: ${orderId}? This cannot be undone.`
-                )
-              ) {
+              if (confirm(`Are you sure you want to void Order ID: ${orderId}? This cannot be undone.`)) {
                 order.status = "Voided";
                 renderOrderHistory();
                 saveState();
@@ -1320,137 +1415,170 @@
               break;
           }
         }
-
-        // --- MODIFIED FUNCTION ---
         function downloadItemizedReportCSV() {
           const filteredData = getFilteredHistory();
-          if (filteredData.length === 0) {
-            return alert("No data in the current view to download.");
-          }
-
-          // Prepend the UTF-8 Byte Order Mark (BOM). This is the key for Excel.
+          if (filteredData.length === 0) return alert("No data in the current view to download.");
           let csvContent = "\uFEFF";
-
-          // Add the header row
           csvContent += "OrderID,Date,Time,Table,Status,ItemName_EN,ItemName_KH,ItemName_ZH,Quantity,UnitPrice_USD,LineTotal_USD\n";
-
           filteredData.forEach((order) => {
             const date = new Date(order.timestamp);
             order.items.forEach((item) => {
-              const row = [
-                order.orderId,
-                date.toLocaleDateString("en-CA"), // YYYY-MM-DD format
-                date.toLocaleTimeString("en-GB"),
-                order.tableNumber,
-                order.status,
-                `"${item.name.en}"`,
-                `"${item.name.kh}"`,
-                `"${item.name.zh}"`,
-                item.quantity,
-                item.price.toFixed(2),
-                (item.price * item.quantity).toFixed(2),
-              ].join(",");
+              const row = [order.orderId, date.toLocaleDateString("en-CA"), date.toLocaleTimeString("en-GB"), order.tableNumber, order.status, `"${item.name.en}"`, `"${item.name.kh}"`, `"${item.name.zh}"`, item.quantity, item.price.toFixed(2), (item.price * item.quantity).toFixed(2)].join(",");
               csvContent += row + "\n";
             });
           });
-
-          // Use Blob for a more robust download method
           const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
           const link = document.createElement("a");
-
           const url = URL.createObjectURL(blob);
           link.setAttribute("href", url);
-          link.setAttribute(
-            "download",
-            `Filtered_Sales_Report_${new Date().toISOString().split("T")[0]}.csv`
-          );
-          
-          // Append to body, click, and remove for robust cross-browser support
+          link.setAttribute("download", `Filtered_Sales_Report_${new Date().toISOString().split("T")[0]}.csv`);
           document.body.appendChild(link);
           link.click();
           document.body.removeChild(link);
         }
 
-        // --- EVENT LISTENERS ---
+        // --- NEW: MENU MANAGEMENT LOGIC ---
+        function toggleManagementMode() {
+            managementMode = !managementMode;
+            dom.body.classList.toggle('management-mode', managementMode);
+            dom.manageMenuBtn.textContent = managementMode ? 'Exit Management' : 'Manage Menu';
+            dom.manageMenuBtn.style.backgroundColor = managementMode ? 'var(--danger-color)' : 'var(--secondary-accent-color)';
+        }
+
+        function getNewItemId() {
+            if (menuData.length === 0) return 1;
+            return Math.max(...menuData.map(item => item.id)) + 1;
+        }
+
+        function saveNewItem(e) {
+            e.preventDefault();
+            const newItem = {
+                id: getNewItemId(),
+                name: {
+                    kh: document.getElementById('item-name-kh').value,
+                    en: document.getElementById('item-name-en').value,
+                    zh: document.getElementById('item-name-zh').value,
+                    py: '...', // Pinyin can be added manually or via a library later
+                },
+                price: parseFloat(document.getElementById('item-price-usd').value),
+                category: document.getElementById('item-category').value.trim(),
+                subcategory: document.getElementById('item-subcategory').value.trim() || "",
+            };
+
+            menuData.push(newItem);
+            saveMenuData();
+            renderMenu();
+            dom.addItemModal.style.display = 'none';
+        }
+
+        function deleteItem(id) {
+            if(confirm('Are you sure you want to permanently delete this item? This action cannot be undone.')) {
+                menuData = menuData.filter(item => item.id !== id);
+                saveMenuData();
+                renderMenu();
+            }
+        }
+        
+        // --- EVENT LISTENERS (UPDATED) ---
         document.addEventListener("click", (e) => {
-          // Close kebab menu if clicked outside
           if (!e.target.closest(".actions-cell")) {
-            document
-              .querySelectorAll(".kebab-menu.visible")
-              .forEach((menu) => menu.classList.remove("visible"));
+            document.querySelectorAll(".kebab-menu.visible").forEach((menu) => menu.classList.remove("visible"));
           }
         });
 
-        document
-          .querySelector(".sidebar-tabs")
-          .addEventListener("click", (e) => {
-            if (e.target.matches(".tab-btn")) {
-              const tab = e.target.dataset.tab;
-              document
-                .querySelectorAll(".tab-btn")
-                .forEach((b) => b.classList.remove("active"));
-              document
-                .querySelectorAll(".sidebar-panel")
-                .forEach((p) => p.classList.remove("active"));
-              e.target.classList.add("active");
-              document.getElementById(`panel-${tab}`).classList.add("active");
-              if (tab === "history") {
-                renderOrderHistory();
-              }
-            }
-          });
-
+        document.querySelector(".sidebar-tabs").addEventListener("click", (e) => {
+          if (e.target.matches(".tab-btn")) {
+            const tab = e.target.dataset.tab;
+            document.querySelectorAll(".tab-btn").forEach((b) => b.classList.remove("active"));
+            document.querySelectorAll(".sidebar-panel").forEach((p) => p.classList.remove("active"));
+            e.target.classList.add("active");
+            document.getElementById(`panel-${tab}`).classList.add("active");
+            if (tab === "history") renderOrderHistory();
+          }
+        });
+        
+        // REVISED Main Category Click Handler
         dom.menuNav.addEventListener("click", (e) => {
           if (e.target.matches(".category-btn")) {
-            dom.menuNav
-              .querySelectorAll(".category-btn")
-              .forEach((b) => b.classList.remove("active"));
+            const category = e.target.dataset.category;
+            dom.menuNav.querySelectorAll(".category-btn").forEach((b) => b.classList.remove("active"));
             e.target.classList.add("active");
-            const cat = e.target.dataset.category;
-            document
-              .querySelectorAll(".menu-item")
-              .forEach((i) =>
-                i.classList.toggle("hidden", i.dataset.category !== cat)
-              );
+
+            // First, show ALL items in the selected category
+            filterMenuItems(category, null);
+
+            // Then, check for sub-categories to build the filter bar
+            const subCategories = [...new Set(menuData.filter(i => i.category === category && i.subcategory).map(i => i.subcategory))];
+            
+            if(subCategories.length > 0) {
+                // Build the sub-category buttons, including an "All" button
+                let subNavHTML = `<button class="category-btn active" data-category="${category}" data-subcategory="all">All</button>`;
+                subNavHTML += subCategories.map(sc => `<button class="category-btn" data-category="${category}" data-subcategory="${sc}">${sc}</button>`).join('');
+                dom.subMenuNav.innerHTML = subNavHTML;
+                dom.subMenuNav.style.display = 'flex';
+            } else {
+                dom.subMenuNav.style.display = 'none';
+                dom.subMenuNav.innerHTML = '';
+            }
           }
+        });
+        
+        // REVISED Sub-Category Click Handler
+        dom.subMenuNav.addEventListener("click", e => {
+            if(e.target.matches('.category-btn')){
+                dom.subMenuNav.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                
+                const category = e.target.dataset.category;
+                let subcategory = e.target.dataset.subcategory;
+
+                // If "All" is clicked, we pass `null` to the filter to show all items. Otherwise, we pass the specific subcategory.
+                if (subcategory === 'all') {
+                    filterMenuItems(category, null);
+                } else {
+                    filterMenuItems(category, subcategory);
+                }
+            }
         });
 
         dom.menuGrid.addEventListener("click", (e) => {
-          const button = e.target.closest("button[data-action]");
-          if (button) {
-            const id = parseInt(button.closest(".card-controls").dataset.id);
-            const action = button.dataset.action;
+          // Handle adding item to cart
+          const addButton = e.target.closest("button[data-action='add']");
+          if (addButton) {
+            const id = parseInt(addButton.closest(".card-controls").dataset.id);
             const itemInCart = cart.find((item) => item.id === id);
-            if (action === "add" && !itemInCart) {
-              cart.push({
-                ...menuData.find((item) => item.id === id),
-                quantity: 1,
-              });
-            } else if (itemInCart) {
-              handleCartItemInteraction(id, action);
-              return;
+            if (!itemInCart) {
+              cart.push({ ...menuData.find((item) => item.id === id), quantity: 1 });
             }
             updateCartDisplay();
+            return;
+          }
+          // Handle quantity adjustment in menu card
+          const adjustButton = e.target.closest(".quantity-adjuster button");
+          if(adjustButton){
+              const id = parseInt(adjustButton.closest(".card-controls").dataset.id);
+              handleCartItemInteraction(id, adjustButton.dataset.action);
+              return;
+          }
+          // Handle item deletion in management mode
+          const removeButton = e.target.closest('.remove-item-btn');
+          if (removeButton) {
+            deleteItem(parseInt(removeButton.dataset.id));
           }
         });
-
+        
         dom.cartItemsList.addEventListener("click", (e) => {
           const button = e.target.closest("button[data-action]");
           if (button) {
-            const card = e.target.closest(".cart-item-card");
-            const id = parseInt(card.dataset.id);
-            const action = button.dataset.action;
-            handleCartItemInteraction(id, action);
+            const id = parseInt(e.target.closest(".cart-item-card").dataset.id);
+            handleCartItemInteraction(id, button.dataset.action);
           }
         });
 
         dom.cartLangSwitcher.addEventListener("click", (e) => {
           if (e.target.matches(".lang-btn")) {
-            const lang = e.target.dataset.lang;
-            currentCartLanguage = lang;
-            dom.cartLangSwitcher
-              .querySelectorAll(".lang-btn")
-              .forEach((btn) => btn.classList.remove("active"));
+            currentCartLanguage = e.target.dataset.lang;
+            dom.cartLangSwitcher.querySelectorAll(".lang-btn").forEach((btn) => btn.classList.remove("active"));
             e.target.classList.add("active");
             updateCartDisplay();
           }
@@ -1462,23 +1590,14 @@
         dom.historyList.addEventListener("click", (e) => {
           const kebabBtn = e.target.closest(".kebab-btn");
           const menuItem = e.target.closest(".kebab-menu-item");
-
           if (kebabBtn) {
             const menu = kebabBtn.nextElementSibling;
             const isVisible = menu.classList.contains("visible");
-            // Close all other menus
-            document
-              .querySelectorAll(".kebab-menu.visible")
-              .forEach((m) => m.classList.remove("visible"));
-            // Toggle current menu
-            if (!isVisible) {
-              menu.classList.add("visible");
-            }
+            document.querySelectorAll(".kebab-menu.visible").forEach((m) => m.classList.remove("visible"));
+            if (!isVisible) menu.classList.add("visible");
           } else if (menuItem && !menuItem.hasAttribute("disabled")) {
             const orderId = e.target.closest("tr").dataset.orderId;
-            const action = menuItem.dataset.action;
-            handleHistoryAction(orderId, action);
-            // Hide menu after action
+            handleHistoryAction(orderId, menuItem.dataset.action);
             menuItem.closest(".kebab-menu").classList.remove("visible");
           }
         });
@@ -1486,51 +1605,65 @@
         dom.historyDateFilters.addEventListener("click", (e) => {
           if (e.target.matches(".date-filter-btn")) {
             historyDateFilter = e.target.dataset.period;
-            dom.historyDateFilters
-              .querySelectorAll(".date-filter-btn")
-              .forEach((b) => b.classList.remove("active"));
+            dom.historyDateFilters.querySelectorAll(".date-filter-btn").forEach((b) => b.classList.remove("active"));
             e.target.classList.add("active");
             renderOrderHistory();
           }
         });
         dom.downloadCsvBtn.addEventListener("click", downloadItemizedReportCSV);
+        
+        // New Management Listeners
+        dom.manageMenuBtn.addEventListener('click', toggleManagementMode);
+        dom.addNewItemBtn.addEventListener('click', () => {
+            dom.addItemForm.reset();
+            dom.addItemModal.style.display = 'flex';
+        });
+        dom.closeAddItemModalBtn.addEventListener('click', () => dom.addItemModal.style.display = 'none');
+        dom.addItemForm.addEventListener('submit', saveNewItem);
 
-        // --- UTILITY & STATE FUNCTIONS ---
+
+        // --- UTILITY & STATE FUNCTIONS (UPDATED) ---
         function getDailyOrderNumber() {
           const today = new Date().toISOString().split("T")[0];
           const lastDate = localStorage.getItem("pos_lastDate_v2");
           let num = 1;
-          if (today === lastDate) {
-            num = parseInt(localStorage.getItem("pos_lastNum_v2") || "0") + 1;
-          }
+          if (today === lastDate) num = parseInt(localStorage.getItem("pos_lastNum_v2") || "0") + 1;
           localStorage.setItem("pos_lastDate_v2", today);
           localStorage.setItem("pos_lastNum_v2", num);
-          return `${today.substring(8, 10)}${today.substring(5, 7)}-${String(
-            num
-          ).padStart(3, "0")}`;
+          return `${today.substring(8, 10)}${today.substring(5, 7)}-${String(num).padStart(3, "0")}`;
         }
 
         function saveState() {
-          localStorage.setItem(
-            "pos_orderHistory_v2",
-            JSON.stringify(orderHistory)
-          );
+          localStorage.setItem("pos_orderHistory_v2", JSON.stringify(orderHistory));
         }
-
         function loadState() {
-          orderHistory = JSON.parse(
-            localStorage.getItem("pos_orderHistory_v2") || "[]"
-          );
+          orderHistory = JSON.parse(localStorage.getItem("pos_orderHistory_v2") || "[]");
         }
-
+        function saveMenuData() {
+            localStorage.setItem('pos_menuData_v3', JSON.stringify(menuData));
+        }
+        function loadMenuData() {
+            const savedData = localStorage.getItem('pos_menuData_v3');
+            if (savedData) {
+                try {
+                    const parsedData = JSON.parse(savedData);
+                    if (Array.isArray(parsedData)) {
+                        menuData = parsedData;
+                    }
+                } catch (e) {
+                    console.error("Could not load saved menu. Using default.", e);
+                }
+            }
+        }
+        
         // --- INITIALIZATION ---
         loadState();
+        loadMenuData();
         renderMenu();
         updateCartDisplay();
         renderOrderHistory();
         setInterval(() => {
-          document.getElementById("current-time").textContent =
-            new Date().toLocaleTimeString("en-GB");
+          document.getElementById("current-time").textContent = new Date().toLocaleTimeString("en-GB");
         }, 1000);
       });
     </script>
