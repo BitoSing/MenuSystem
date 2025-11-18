@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>អាហារដ្ឋានដើមជម្ពូរ | Business POS</title>
+    <title>អាហារដ្ឋានដើមជម្ពូរ</title>
 
     <style>
       /* --- PROFESSIONAL DESIGN SYSTEM v7.3 (Streamlined History Actions) --- */
@@ -772,9 +772,34 @@
           border: none;
           color: #000;
           background: #fff;
+          page-break-inside: avoid; /* Prevent page breaks inside the receipt */
+        }
+        .receipt-content {
+          font-size: 0.85rem; /* Reduce font size for compact layout */
+          line-height: 1.2; /* Adjust line height to save space */
+          padding: 15px; /* Reduce padding */
+        }
+        .receipt-header {
+          margin-bottom: 10px; /* Reduce margin */
+        }
+        .receipt-table {
+          font-size: 0.8rem; /* Reduce table font size */
+          margin-bottom: 10px; /* Reduce bottom margin */
+        }
+        .receipt-table th,
+        .receipt-table td {
+          padding: 3px 0; /* Reduce padding to save space */
+        }
+        .receipt-totals {
+          font-size: 0.85rem; /* Adjust totals font size */
+          margin-top: 10px; /* Reduce top margin */
+        }
+        .receipt-footer {
+          font-size: 0.75rem; /* Reduce footer font size */
+          margin-top: 10px; /* Adjust margin for compact layout */
         }
         .receipt-actions {
-          display: none !important;
+          display: none !important; /* Hide actions during print */
         }
       }
     </style>
@@ -1024,26 +1049,81 @@
             category: "Drinks",
           },
           {
-            id: 5,
+            id: 16,
             name: {
-              kh: "ដំឡូងបារាំងបំពង",
-              en: "French Fries",
-              zh: "炸薯条",
-              py: "zhá shǔtiáo",
+              kh: "បាយផាក់ឡូវ",
+              en: "Fried Rice with Pork",
+              zh: "猪肉炒饭",
+              py: "zhūròu chǎofàn",
             },
             price: 2.0,
-            category: "Snack",
+            category: "Food",
           },
           {
-            id: 6,
+            id: 17,
             name: {
-              kh: "ឈុតអាហារថ្ងៃត្រង់",
-              en: "Lunch Set",
-              zh: "午餐套餐",
-              py: "wǔcān tàocān",
+              kh: "គុយទាវប្រហិតត្រី",
+              en: "Fish Ball Noodle Soup",
+              zh: "鱼丸面",
+              py: "yúwán miàn",
             },
-            price: 6.5,
-            category: "Promotion",
+            price: 2.5,
+            category: "Food",
+          },
+          {
+            id: 18,
+            name: {
+              kh: "គុយទាវប្រហិតបាក់សៀក",
+              en: "Pork Ball Noodle Soup",
+              zh: "猪肉丸面",
+              py: "zhūròu wán miàn",
+            },
+            price: 2.5,
+            category: "Food",
+          },
+          {
+            id: 19,
+            name: {
+              kh: "Champion Energy Drink",
+              en: "Champion Energy Drink",
+              zh: "冠军能量饮料",
+              py: "guànjūn néngliàng yǐnliào",
+            },
+            price: 1.0,
+            category: "Drinks",
+          },
+          {
+            id: 20,
+            name: {
+              kh: "Coca Cola",
+              en: "Coca Cola",
+              zh: "可口可乐",
+              py: "kěkǒu kělè",
+            },
+            price: 1.0,
+            category: "Drinks",
+          },
+          {
+            id: 21,
+            name: {
+              kh: "ទឹកសុទ្ធ 550ml",
+              en: "Water 550ml",
+              zh: "550毫升水",
+              py: "550 háoshēng shuǐ",
+            },
+            price: 0.25,
+            category: "Drinks",
+          },
+          {
+            id: 22,
+            name: {
+              kh: "ទឹកសុទ្ធ 1.5l",
+              en: "Water 1.5L",
+              zh: "1.5升水",
+              py: "1.5 shēng shuǐ",
+            },
+            price: 0.75,
+            category: "Drinks",
           },
         ];
 
@@ -1089,34 +1169,24 @@
           dom.menuGrid.innerHTML = menuData
             .map(
               (item) => `
-                    <div class="menu-item" data-id="${
-                      item.id
-                    }" data-category="${item.category}">
-                        <img src="${item.image || 'placeholder.jpg'}" alt="${item.name.en}" />
-                        <div class="menu-item-content">
-                            <div class="menu-item-names">
-                                <div class="lang-kh">${item.name.kh}</div>
-                                <div class="lang-en">${item.name.en}</div>
-                                <div class="lang-zh">${
-                                  item.name.zh
-                                } <span class="lang-py">(${
-                item.name.py
-              })</span></div>
-                            </div>
-                            <div class="menu-item-footer">
-                                <div class="price-display">
-                                    <div class="price-khr">៛${formatKHR(item.price)}</div>
-                                    <div class="price-usd">$${item.price.toFixed(
-                                      2
-                                    )}</div>
-                                </div>
-                                <div class="card-controls" data-id="${
-                                  item.id
-                                }"></div>
-                            </div>
-                        </div>
-                    </div>
-                `
+        <div class="menu-item" data-id="${item.id}" data-category="${item.category}">
+          <img src="${item.image || 'placeholder.jpg'}" alt="${item.name.en}" />
+          <div class="menu-item-content">
+            <div class="menu-item-names">
+              <div class="lang-kh">${item.name.kh}</div>
+              <div class="lang-en">${item.name.en}</div>
+              <div class="lang-zh">${item.name.zh} <span class="lang-py">(${item.name.py})</span></div>
+            </div>
+            <div class="menu-item-footer">
+              <div class="price-display">
+                <div class="price-khr">៛${formatKHR(item.price)}</div>
+                <div class="price-usd">$${item.price.toFixed(2)}</div>
+              </div>
+              <div class="card-controls" data-id="${item.id}"></div>
+            </div>
+          </div>
+        </div>
+      `
             )
             .join("");
           updateAllMenuItemControls();
